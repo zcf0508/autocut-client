@@ -3,6 +3,7 @@ import * as fs from "fs"
 import * as https from "https"
 import * as path from "path"
 import StreamZip  from "node-stream-zip"
+import { autocutCheck } from "./check"
 
 /**
  * 下载 autocut 程序
@@ -10,7 +11,7 @@ import StreamZip  from "node-stream-zip"
  * @return 返回可执行文件地址
  */
 export function downloadAutoCut(savePath: string) {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<string>(async (resolve, reject) => {
     const platform = os.platform()
     const arch = os.arch()
     console.log(`platform: ${platform}`)
@@ -21,11 +22,13 @@ export function downloadAutoCut(savePath: string) {
       const excutePath = path.join(savePath,"autocut","autocut.ext")
 
       if(fs.existsSync(excutePath)){
-        // TODO: 验证是否可用
-        resolve(excutePath)
+        if(await autocutCheck(excutePath)){
+          resolve(excutePath)
+        }
         return
       }
 
+      // TODO: 下载地址
       https.get("", (res)=>{
         if(res.statusCode !== 200) {
           reject(new Error(`下载失败${res.statusCode}`))
