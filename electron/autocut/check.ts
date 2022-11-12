@@ -31,7 +31,7 @@ export function autocutCheck(excutePath:string){
     const ffmpeg = exec(`${excutePath} -h`)
 
     ffmpeg.stdout.on("data", (res) => {
-      if(res.indexOf("usage: autocut.exe") >= 0){
+      if(res.indexOf("usage: autocut") >= 0){
         resolve(true)
         return
       }
