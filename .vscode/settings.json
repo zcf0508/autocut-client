@@ -1,0 +1,18 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/*electron-builder.json5"
+      ],
+      "url": "https://json.schemastore.org/electron-builder"
+    }
+  ],
+  "prettier.enable": false,
+  "eslint.format.enable": true,
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+  }
+}
