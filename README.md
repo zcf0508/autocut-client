@@ -4,6 +4,15 @@
 
 查看 [原型图](https://js.design/f/T0LLLh?p=g8rtx09zle)
 
+# RoadMao
+
+- [x] 安装状态监测
+- [x] AutoCut 安装引导页
+- [ ] 选择视频文件并生成字幕页面
+- [ ] 字幕编辑页面
+- [ ] 导出视频
+- [ ] 编辑结果导入到 Pr 中
+
 # 参考
 
 - [AutoCut](https://github.com/mli/autocut)
