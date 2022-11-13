@@ -2,7 +2,8 @@
 const { ffmpegStatus, checkFFmpeg } = useFFmpeg()
 const { autocutStatus, checkAutocut } = useAutoCut()
 
-
+checkFFmpeg()
+checkAutocut()
 </script>
 
 <template>
@@ -17,7 +18,7 @@ const { autocutStatus, checkAutocut } = useAutoCut()
         ></div>
         <span>FFmpeg</span>
       </div>
-      <div class="flex items-center cursor-pointer">
+      <div class="flex items-center cursor-pointer" @click="checkAutocut">
         <div 
           class="w-[8px] h-[8px] rounded-full mr-2" 
           :class="autocutStatus ? 'bg-[#388E3C]' : 'bg-[#C9C9C9]'"

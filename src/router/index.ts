@@ -4,8 +4,17 @@ export const routes = [
   {
     path: "/",
     component: () => import("@/layout/index.vue"),
+    redirect: "/status",
     children: [
+      {
+        path: "/status",
+        component: () => import("@/views/status/index.vue"),
+      },
     ],
+  },
+  {
+    path: "/setup/autocut",
+    component: () => import("@/views/setup/autocut.vue"),
   },
 ];
 

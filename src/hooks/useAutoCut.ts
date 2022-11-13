@@ -11,9 +11,6 @@ export function useAutoCut(){
   ipcRenderer.on("report-autocut-status",(e,...args)=>{
     autocutStatus.value = args[0]
   })
-
-  // 主动检查一遍
-  checkAutocut()
   
   return {
     autocutStatus,

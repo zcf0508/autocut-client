@@ -10,9 +10,6 @@ export function useFFmpeg(){
   ipcRenderer.on("report-ffmpeg-status",(e,...args)=>{
     ffmpegStatus.value = args[0]
   })
-
-  // 主动检查一遍
-  checkFFmpeg()
   
   return {
     ffmpegStatus,

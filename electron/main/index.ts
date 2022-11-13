@@ -125,4 +125,4 @@ ipcMain.handle("open-win", (event, arg) => {
   }
 })
 
-registerAutoCut()
+registerAutoCut(win)
