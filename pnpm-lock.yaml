@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@iconify/json': ^2.1.136
+  '@types/lodash-es': ^4.17.6
   '@typescript-eslint/eslint-plugin': ^5.42.1
   '@typescript-eslint/parser': ^5.42.1
   '@unocss/preset-icons': ^0.46.5
@@ -13,6 +14,7 @@ specifiers:
   eslint-plugin-import: ^2.26.0
   eslint-plugin-vue: ^9.7.0
   hami-vuex: ^0.1.4
+  lodash-es: ^4.17.21
   node-stream-zip: ^1.15.0
   typescript: ^4.8.4
   unocss: ^0.46.5
@@ -31,6 +33,7 @@ dependencies:
 
 devDependencies:
   '@iconify/json': 2.1.136
+  '@types/lodash-es': 4.17.6
   '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
   '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
   '@unocss/preset-icons': 0.46.5
@@ -42,6 +45,7 @@ devDependencies:
   eslint-plugin-import: 2.26.0_jnohwm7eexgw7uduhweedcbnpe
   eslint-plugin-vue: 9.7.0_eslint@8.27.0
   hami-vuex: 0.1.4_vue@3.2.45+vuex@4.1.0
+  lodash-es: 4.17.21
   typescript: 4.8.4
   unocss: 0.46.5_vite@3.2.3
   unplugin-auto-import: 0.11.4_@vueuse+core@9.5.0
@@ -371,6 +375,16 @@ packages:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
       '@types/node': 16.18.3
+    dev: true
+
+  /@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
+    dependencies:
+      '@types/lodash': 4.14.188
+    dev: true
+
+  /@types/lodash/4.14.188:
+    resolution: {integrity: sha512-zmEmF5OIM3rb7SbLCFYoQhO4dGt2FRM9AMkxvA3LaADOF1n8in/zGJlWji9fmafLoNyz+FoL6FE0SLtGIArD7w==}
     dev: true
 
   /@types/minimatch/5.1.2:
@@ -2871,6 +2885,10 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       p-locate: 5.0.0
+    dev: true
+
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
     dev: true
 
   /lodash.merge/4.6.2:

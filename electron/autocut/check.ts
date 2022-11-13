@@ -28,21 +28,21 @@ export function ffmpegCheck() {
  */
 export function autocutCheck(excutePath:string){
   return new Promise<boolean>((resolve, reject) => {
-    const ffmpeg = exec(`${excutePath} -h`)
+    const autocut = exec(`${excutePath} -h`)
 
-    ffmpeg.stdout.on("data", (res) => {
+    autocut.stdout.on("data", (res) => {
       if(res.indexOf("usage: autocut") >= 0){
         resolve(true)
         return
       }
     })
 
-    ffmpeg.stderr.on("data", (err) => {
+    autocut.stderr.on("data", (err) => {
       resolve(false)
       return
     })
 
-    ffmpeg.on("close", (code, signal) => {
+    autocut.on("close", (code, signal) => {
       console.log(`AutoCut exit. ${code}: ${signal}`)
     })
   })

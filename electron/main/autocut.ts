@@ -1,5 +1,6 @@
 import {  BrowserWindow, ipcMain, dialog } from "electron"
 import { autocutCheck, ffmpegCheck } from "../autocut/check"
+import { downloadAutoCut } from "../autocut/download"
 
 export function registerAutoCut(win: BrowserWindow){
   ipcMain.on("check-ffmpeg",async (e) => {
@@ -23,5 +24,16 @@ export function registerAutoCut(win: BrowserWindow){
 
     })
     return res
+  })
+
+  ipcMain.on("download-autocut", async (e,...args) => {
+    const path = args[0]
+    downloadAutoCut(path, (status, msg, process) => {
+      e.reply("report-download", {
+        status,
+        msg,
+        process,
+      })
+    })
   })
 }
