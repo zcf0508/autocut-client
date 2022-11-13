@@ -15,7 +15,7 @@ process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_E
 import { app, BrowserWindow, shell, ipcMain } from "electron"
 import { release } from "os"
 import { join } from "path"
-import { runAutocut } from "../autocut"
+import { generateSubtitle } from "../autocut"
 import { ffmpegCheck, autocutCheck } from "../autocut/check"
 import { downloadAutoCut } from "../autocut/download"
 
@@ -43,8 +43,10 @@ const indexHtml = join(process.env.DIST, "index.html")
 
 async function createWindow() {
   // downloadAutoCut('E:\\桌面')
-  // runAutocut()
-  console.log(await autocutCheck("D:\\autocut\\autocut.exe"))
+  generateSubtitle("D:\\autocut\\autocut.exe", "e:/1.mp4", (status, msg, process) => {
+    console.log(status, msg, process)
+  })
+  // console.log(await autocutCheck("D:\\autocut\\autocut.exe"))
   win = new BrowserWindow({
     title: "Main window",
     icon: join(process.env.PUBLIC, "favicon.ico"),
