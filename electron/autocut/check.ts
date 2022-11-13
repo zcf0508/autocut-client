@@ -1,7 +1,7 @@
 import { exec } from "child_process"
 
 export function ffmpegCheck() {
-  return new Promise<Boolean>((resolve, reject) => {
+  return new Promise<boolean>((resolve, reject) => {
     const ffmpeg = exec("ffmpeg -version")
 
     ffmpeg.stdout.on("data", (res) => {
@@ -27,7 +27,7 @@ export function ffmpegCheck() {
  * @param excutePath AutoCut 可执行文件路径
  */
 export function autocutCheck(excutePath:string){
-  return new Promise<Boolean>((resolve, reject) => {
+  return new Promise<boolean>((resolve, reject) => {
     const ffmpeg = exec(`${excutePath} -h`)
 
     ffmpeg.stdout.on("data", (res) => {

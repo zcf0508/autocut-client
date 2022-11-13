@@ -18,6 +18,7 @@ import { join } from "path"
 import { generateSubtitle } from "../autocut"
 import { ffmpegCheck, autocutCheck } from "../autocut/check"
 import { downloadAutoCut } from "../autocut/download"
+import { registerAutoCut } from "./autocut"
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration()
@@ -43,9 +44,9 @@ const indexHtml = join(process.env.DIST, "index.html")
 
 async function createWindow() {
   // downloadAutoCut('E:\\桌面')
-  generateSubtitle("D:\\autocut\\autocut.exe", "e:/1.mp4", (status, msg, process) => {
-    console.log(status, msg, process)
-  })
+  // generateSubtitle("D:\\autocut\\autocut.exe", "e:/1.mp4", (status, msg, process) => {
+  //   console.log(status, msg, process)
+  // })
   // console.log(await autocutCheck("D:\\autocut\\autocut.exe"))
   win = new BrowserWindow({
     title: "Main window",
@@ -58,6 +59,8 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    width: 1440,
+    height: 1024,
   })
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
@@ -121,3 +124,5 @@ ipcMain.handle("open-win", (event, arg) => {
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
 })
+
+registerAutoCut()
