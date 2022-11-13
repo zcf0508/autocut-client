@@ -10,11 +10,11 @@ type GenerateStatus = "processing" | "error" | "success"
 export function generateSubtitle(
   excutePath: string, 
   filePath: string, 
-  cb: (status: GenerateStatus, msg: string, process?: number)=>any,
+  cb: (status: GenerateStatus, msg: string, process?: number) => any,
 ) {
   let fail = false
-  let commad = `${excutePath} -t ${filePath}`
-  console.log(commad)
+  // let commad = `${excutePath} -t ${filePath}`
+  // console.log(commad)
   const p = spawn(excutePath, ["-t", `${filePath}`])
 
   const stdoutLineReader = readline.createInterface({
@@ -22,7 +22,7 @@ export function generateSubtitle(
     output: p.stdin,
     terminal: false,
   });
-  stdoutLineReader.on("line", (line)=>{
+  stdoutLineReader.on("line", (line) => {
     console.log(`stdout: ${line}`)
   })
 
@@ -31,28 +31,29 @@ export function generateSubtitle(
     output: p.stdin,
     terminal: false,
   });
-  stderrLineReader.on("line", (line)=>{
+  stderrLineReader.on("line", (line) => {
     console.log(`stderr: ${line}`)
 
-    if(line.indexOf("exists, skipping")>=0){
+    if (line.indexOf("exists, skipping")>= 0){
       fail = true
       cb("error", "md file already exist")
     }
-    if(line.indexOf("Transcribing") >=0){
+    if (line.indexOf("Transcribing") >= 0){
       cb(
         "processing",
         "transcribing",
-        10,
+        0,
       )
     }
-    if(line.indexOf("Done transcription") >=0){
+    if (line.match(/[0-9]*%/).length > 0) {
+      const process = parseInt(line.match(/[0-9]*%/)[0])
       cb(
         "processing",
-        "done transcription",
-        95,
+        "transcribing",
+        process,
       )
     }
-    if(line.indexOf("Saved texts to") >=0){
+    if (line.indexOf("Saved texts to") >= 0){
       cb(
         "success",
         "saved",
