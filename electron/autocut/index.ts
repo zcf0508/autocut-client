@@ -36,7 +36,8 @@ export function generateSubtitle(
 
     if (line.indexOf("exists, skipping")>= 0){
       fail = true
-      cb("error", "md file already exist")
+      cb("success", "md file already exist")
+      return
     }
     if (line.indexOf("Transcribing") >= 0){
       cb(
@@ -45,7 +46,7 @@ export function generateSubtitle(
         0,
       )
     }
-    if (line.match(/[0-9]*%/).length > 0) {
+    if (line.match(/[0-9]*%/)?.length > 0) {
       const process = parseInt(line.match(/[0-9]*%/)[0])
       cb(
         "processing",
@@ -69,6 +70,7 @@ export function generateSubtitle(
       "error",
       `unknown error: ${err}`,
     )
+    return
   });
 
   p.on("close", (code) => {

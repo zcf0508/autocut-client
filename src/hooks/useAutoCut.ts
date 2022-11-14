@@ -1,7 +1,8 @@
 import { ipcRenderer } from "electron"
+import path from "path"
 
 export function useAutoCut(){
-  const excutePath = computed(() => `${configStore.installPath}/autocut/autocut.exe`)
+  const excutePath = computed(() => path.join(configStore.installPath, "autocut", "autocut.exe"))
   const autocutStatus = ref(false)
   
   const checkAutocut = ()=>{

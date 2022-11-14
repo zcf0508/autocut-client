@@ -20,4 +20,9 @@ body {
   padding: 0;
   background-color: #fafafa;
 }
+
+#app {
+  width: 100%;
+  height: 100%;
+}
 </style>

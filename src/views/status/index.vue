@@ -16,7 +16,7 @@ const openFFmpeg = ()=>{
   <div class="flex flex-col justify-center items-center">
     <div class="w-[90%] h-[240px] my-2
       flex flex-col justify-center items-center
-      border border-solid border-[#F0F0F0]
+      border border-solid border-[#F0F0F0] rounded-[4px]
       bg-white
       leading-6"
     >
@@ -28,7 +28,7 @@ const openFFmpeg = ()=>{
     </div>
     <div class="w-[90%] h-[240px] my-2
       flex flex-col justify-center items-center
-      border border-solid border-[#F0F0F0]
+      border border-solid border-[#F0F0F0] rounded-[4px]
       bg-white
       leading-6"
     >

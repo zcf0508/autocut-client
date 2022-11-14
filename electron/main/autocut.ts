@@ -1,6 +1,8 @@
 import {  BrowserWindow, ipcMain, dialog } from "electron"
+import { generateSubtitle } from "../autocut"
 import { autocutCheck, ffmpegCheck } from "../autocut/check"
 import { downloadAutoCut } from "../autocut/download"
+let excutePath = ""
 
 export function registerAutoCut(win: BrowserWindow){
   ipcMain.on("check-ffmpeg",async (e) => {
@@ -13,6 +15,9 @@ export function registerAutoCut(win: BrowserWindow){
     let res = false
     if(path){
       res = await autocutCheck(path)
+      if(res) {
+        excutePath = path
+      }
     }
     e.reply("report-autocut-status", res)
   })
@@ -27,9 +32,20 @@ export function registerAutoCut(win: BrowserWindow){
   })
 
   ipcMain.on("download-autocut", async (e,...args) => {
-    const path = args[0]
-    downloadAutoCut(path, (status, msg, process) => {
+    const downloadPath = args[0] as string
+    downloadAutoCut(downloadPath, (status, msg, process) => {
       e.reply("report-download", {
+        status,
+        msg,
+        process,
+      })
+    })
+  })
+
+  ipcMain.on("start-transcribe", async (e,...args) => {
+    const filePath = args[0] as string
+    generateSubtitle(excutePath, filePath, (status, msg, process) => {
+      e.reply("report-transcribe", {
         status,
         msg,
         process,
