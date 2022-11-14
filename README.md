@@ -4,7 +4,7 @@
 
 查看 [原型图](https://js.design/f/T0LLLh?p=g8rtx09zle)
 
-# RoadMao
+# RoadMap
 
 - [x] 安装状态监测
 - [x] AutoCut 安装引导页
@@ -12,6 +12,7 @@
 - [ ] 字幕编辑页面
 - [ ] 导出视频
 - [ ] 编辑结果导入到 Pr 中
+- [ ] Mac 系统支持
 
 # 参考
 
