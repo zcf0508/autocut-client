@@ -3,7 +3,8 @@ import { ipcRenderer } from "electron"
 import { debounce } from "lodash-es"
 
 const installPath = ref(configStore.installPath)
-const { autocutStatus, checkAutocut } = useAutoCut()
+const autocutStatus = computed(() => statusStore.autocutStatus)
+const { checkAutocut } = useAutoCut()
 
 watch(() => installPath.value, (newVal) => {
   configStore.setInstallPath(newVal)

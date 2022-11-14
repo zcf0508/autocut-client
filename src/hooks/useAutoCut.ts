@@ -11,6 +11,7 @@ export function useAutoCut(){
 
   ipcRenderer.on("report-autocut-status",(e,...args)=>{
     autocutStatus.value = args[0]
+    statusStore.setAutocut(args[0])
   })
   
   watch(

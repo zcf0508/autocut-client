@@ -9,6 +9,7 @@ export function useFFmpeg(){
 
   ipcRenderer.on("report-ffmpeg-status",(e,...args)=>{
     ffmpegStatus.value = args[0]
+    statusStore.setFFmpeg(args[0])
   })
   
   return {

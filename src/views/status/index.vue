@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {shell} from "electron"
 
-const { ffmpegStatus } = useFFmpeg()
-const { autocutStatus } = useAutoCut()
+
+const ffmpegStatus = computed(() => statusStore.ffmpegStatus)
+const autocutStatus = computed(() => statusStore.autocutStatus)
 
 const ffmpegUrl = "https://ffmpeg.org/download.html"
 
@@ -35,6 +36,18 @@ const openFFmpeg = ()=>{
       <div v-if="!autocutStatus">
         <a href="/setup/autocut">点击开始配置</a>
       </div>
+    </div>
+    <div>
+      <button 
+        class="h-[40px] rounded-[4px] border-none  whitespace-nowrap px-2"
+        :class=" ffmpegStatus && autocutStatus 
+          ? 'cursor-pointer bg-[#0063b1] text-white' 
+          : 'cursor-not-allowed bg-[#F0F0F0]'"
+        :disabled="!ffmpegStatus || !autocutStatus"
+        @click="$router.push('/edit')"
+      >
+        开始使用
+      </button>
     </div>
   </div>
 </template>

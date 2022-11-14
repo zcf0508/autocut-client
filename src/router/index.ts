@@ -10,6 +10,10 @@ export const routes = [
         path: "/status",
         component: () => import("@/views/status/index.vue"),
       },
+      {
+        path: "/edit",
+        component: () => import("@/views/edit/index.vue"),
+      },
     ],
   },
   {
