@@ -15,7 +15,11 @@ export function getAudio(
   let success = false
   const p = spawn(
     "ffmpeg",
-    ["-i", `${video}`, "-vn", "-y", "-acodec", "copy", `${video.slice(0, video.lastIndexOf("."))}.wav`],
+    [
+      "-i", `${video}`, "-y", 
+      "-vn",  "-acodec", "pcm_s16le", "-ac", "1", "-ar", "8000", 
+      `${video.slice(0, video.lastIndexOf("."))}.wav`,
+    ],
   )
   const stdoutLineReader = readline.createInterface({
     input: p.stdout,
@@ -59,7 +63,12 @@ export function convertVideo(
   let success = false
   const p = spawn(
     "ffmpeg",
-    ["-i", `${video}`, "-y", "-vcodec", "copy", `${video.slice(0, video.lastIndexOf("."))}.mp4`],
+    [
+      "-i", `${video}`, "-y", 
+      "-vcodec", "libx264", 
+      "-threads", "8", "-preset", "ultrafast", 
+      `${video.slice(0, video.lastIndexOf("."))}.mp4`,
+    ],
   )
   const stdoutLineReader = readline.createInterface({
     input: p.stdout,
@@ -77,7 +86,7 @@ export function convertVideo(
   });
   stderrLineReader.on("line", (line) => {
     console.log(`stderr: ${line}`)
-    if(line.match(/audio:[0-9]*kB/)?.length>0) {
+    if(line.match(/video:[0-9]*kB/)?.length>0) {
       success = true
       cb("success", "success")
     }

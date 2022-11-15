@@ -2,6 +2,7 @@ import {  BrowserWindow, ipcMain, dialog } from "electron"
 import { generateSubtitle } from "../autocut"
 import { autocutCheck, ffmpegCheck } from "../autocut/check"
 import { downloadAutoCut } from "../autocut/download"
+import { convertVideo, getAudio } from "../ffmpeg"
 let excutePath = ""
 
 export function registerAutoCut(win: BrowserWindow){
@@ -46,6 +47,28 @@ export function registerAutoCut(win: BrowserWindow){
     const filePath = args[0] as string
     generateSubtitle(excutePath, filePath, (status, msg, process) => {
       e.reply("report-transcribe", {
+        status,
+        msg,
+        process,
+      })
+    })
+  })
+
+  ipcMain.on("convert-video", async (e,...args) => {
+    const filePath = args[0] as string
+    convertVideo(filePath, (status, msg, process) => {
+      e.reply("report-convert-video", {
+        status,
+        msg,
+        process,
+      })
+    })
+  })
+
+  ipcMain.on("convert-audio", async (e,...args) => {
+    const filePath = args[0] as string
+    getAudio(filePath, (status, msg, process) => {
+      e.reply("report-convert-audio", {
         status,
         msg,
         process,

@@ -26,6 +26,7 @@ specifiers:
   vite-electron-plugin: ^0.5.0
   vite-plugin-electron-renderer: ^0.10.2
   vue: ^3.2.40
+  vue-audio-visual: ^3.0.1
   vue-router: ^4.1.6
   vue-tsc: ^1.0.9
   vuex: ^4.1.0
@@ -58,6 +59,7 @@ devDependencies:
   vite-electron-plugin: 0.5.1
   vite-plugin-electron-renderer: 0.10.3
   vue: 3.2.45
+  vue-audio-visual: 3.0.1
   vue-router: 4.1.6_vue@3.2.45
   vue-tsc: 1.0.9_typescript@4.8.4
   vuex: 4.1.0_vue@3.2.45
@@ -4090,6 +4092,15 @@ packages:
       rollup: 2.79.1
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /vue-audio-visual/3.0.1:
+    resolution: {integrity: sha512-DtdWKSCGSATqBxXci2F6yJkgiFjcihAi+DJRSNSOuE+fDdqBy+FS8WtmetE3xGxqCjJOZVkV41gNXoNJpDXiDQ==}
+    dependencies:
+      '@vueuse/core': 9.5.0_vue@3.2.45
+      vue: 3.2.45
+    transitivePeerDependencies:
+      - '@vue/composition-api'
     dev: true
 
   /vue-demi/0.13.11_vue@3.2.45:

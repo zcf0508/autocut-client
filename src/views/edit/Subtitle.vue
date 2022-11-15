@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import * as fs from "fs"
-import { parseSync, formatTimestamp, Cue } from "subtitle"
+import { parseSync, Cue } from "subtitle"
 import { type SrtItem } from "./components/SubtitleItem.vue"
-
 import SubtitleItem from "./components/SubtitleItem.vue";
+
+// @ts-ignore
+import { useAVWaveform } from "vue-audio-visual"
 
 const props = defineProps({
   filePath: {
     type: String,
     required: true,
+  },
+  audioFilePath: {
+    type: String,
+    // required: true,
   },
   srtFilePath: {
     type: String,
@@ -51,16 +57,43 @@ const toggleChecked = (index: number) => {
 }
 
 const videoRef = ref<HTMLVideoElement | null>(null)
+const audioPlayer = ref<HTMLAudioElement | null>(null)
+const audioCanvas = ref<HTMLCanvasElement | null>(null)
 
+
+watch(
+  ()=>videoRef.value,
+  (newVal)=>{
+    if(newVal) {
+      console.log(videoRef.value?.clientWidth)
+      useAVWaveform(
+        audioPlayer, 
+        audioCanvas, 
+        {
+          src: props.audioFilePath, 
+          canvHeight: 80,
+          canvWidth: videoRef.value?.clientWidth,
+        },
+      )
+    }
+  },
+)
 const selectItem = (index:number) => {
   const item = srtItemList.value[index]
   // 控制播放进度
-  if(videoRef.value) {
+  if(videoRef.value && audioPlayer.value) {
     videoRef.value.pause()
     videoRef.value.currentTime = item.data.start / 1000
     videoRef.value.play()
+
+    // audioPlayer.value.pause()
+    // audioPlayer.value.currentTime = item.data.start / 1000
+    // audioPlayer.value.play()
   }
 }
+
+
+
 </script>
 
 <template>
@@ -77,6 +110,10 @@ const selectItem = (index:number) => {
     </div>
     <div class="w-[calc(100%-460px)]">
       <video ref="videoRef" class="w-full" controls :src="filePath"></video>
+      <div class="mt-2">
+        <audio ref="audioPlayer" :src="audioFilePath" controls class="hidden" muted/>
+        <canvas ref="audioCanvas" />
+      </div>
     </div>
   </div>
 </template>
