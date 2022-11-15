@@ -3,7 +3,7 @@ import * as fs from "fs"
 import { parseSync, Cue } from "subtitle"
 import { type SrtItem } from "./components/SubtitleItem.vue"
 import SubtitleItem from "./components/SubtitleItem.vue";
-
+import { throttle } from "lodash-es"
 // @ts-ignore
 import { useAVWaveform } from "vue-audio-visual"
 
@@ -65,7 +65,6 @@ watch(
   ()=>videoRef.value,
   (newVal)=>{
     if(newVal) {
-      console.log(videoRef.value?.clientWidth)
       useAVWaveform(
         audioPlayer, 
         audioCanvas, 
@@ -92,6 +91,25 @@ const selectItem = (index:number) => {
   }
 }
 
+onMounted(()=>{
+  if(videoRef.value) {
+    videoRef.value.addEventListener("timeupdate", throttle(()=>{
+      if(audioPlayer.value) {
+        audioPlayer.value.currentTime = videoRef.value?.currentTime || 0
+      }
+    }, 50))
+    videoRef.value.addEventListener("pause", ()=>{
+      if(audioPlayer.value) {
+        audioPlayer.value.pause()
+      }
+    })
+    videoRef.value.addEventListener("play", ()=>{
+      if(audioPlayer.value) {
+        audioPlayer.value.play()
+      }
+    })
+  }
+})
 
 
 </script>
