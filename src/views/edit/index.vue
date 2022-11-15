@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ipcRenderer } from "electron"
+import Subtitle from "./Subtitle.vue"
+
 const filePath = ref("")
-const mdFilePath = ref("")
+const srtFilePath = ref("")
 const status = ref("")
 const transcribeProcess = ref(-1)
 const dragRef = ref<HTMLElement | null>(null)
@@ -31,9 +33,9 @@ ipcRenderer.on("report-transcribe",(e,...args) => {
   if(res.status === "success") {
     console.log("完成")
     transcribeProcess.value = -1
-    // 替换后缀名为 .md
-    mdFilePath.value = filePath.value.slice(0,filePath.value.lastIndexOf(".")) + ".md"
-    console.log(mdFilePath.value)
+    // 替换后缀名为 .srt
+    srtFilePath.value = filePath.value.slice(0,filePath.value.lastIndexOf(".")) + ".srt"
+    console.log(srtFilePath.value)
   }
 })
 
@@ -73,7 +75,7 @@ onUnmounted(()=>{
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-full">
+  <div v-if="!srtFilePath" class="flex justify-center items-center h-full">
     <div 
       ref="dragRef"
       class="w-[90%] min-h-[400px] h-[80%] max-h-[80vh] my-auto
@@ -88,9 +90,11 @@ onUnmounted(()=>{
       <template v-else>
         <div>已选文件： {{ filePath }}</div>
       </template>
-      
     </div>
     
+  </div>
+  <div v-else class="h-full">
+    <subtitle :file-path="filePath" :srt-file-path="srtFilePath"></subtitle>
   </div>
 </template>
 

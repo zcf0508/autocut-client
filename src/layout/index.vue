@@ -8,7 +8,7 @@ checkAutocut()
 
 <template>
   <div class="bg-[#fafafa] w-full h-full">
-    <div class="h-[calc(100%-48px)]">
+    <div class="h-[calc(100%-48px)] overflow-y-hidden">
       <router-view></router-view>
     </div>
     <div class="fixed bottom-0 w-full h-[47px] px-4

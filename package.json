@@ -29,6 +29,7 @@
     "eslint-plugin-vue": "^9.7.0",
     "hami-vuex": "^0.1.4",
     "lodash-es": "^4.17.21",
+    "subtitle": "^4.2.1",
     "typescript": "^4.8.4",
     "unocss": "^0.46.5",
     "unplugin-auto-import": "^0.11.4",
@@ -54,6 +55,7 @@
     "vue"
   ],
   "dependencies": {
+    "buffer": "^6.0.3",
     "node-stream-zip": "^1.15.0"
   }
 }
