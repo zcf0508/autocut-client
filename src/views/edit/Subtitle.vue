@@ -28,6 +28,7 @@ const props = defineProps({
  * 解析后的字幕列表
  */
 const srtItemList = ref([] as Array<SrtItem>)
+const presentIndex = ref(0)
 
 const readSrt = (path: string) => {
   const content = fs.readFileSync(path, "utf-8")
@@ -81,13 +82,11 @@ const selectItem = (index:number) => {
   const item = srtItemList.value[index]
   // 控制播放进度
   if(videoRef.value && audioPlayer.value) {
-    videoRef.value.pause()
-    videoRef.value.currentTime = item.data.start / 1000
+    // +100 加0.1毫秒缓解延迟问题
+    videoRef.value.currentTime = (item.data.start + 100) / 1000
     videoRef.value.play()
-
-    // audioPlayer.value.pause()
-    // audioPlayer.value.currentTime = item.data.start / 1000
-    // audioPlayer.value.play()
+    
+    presentIndex.value = index
   }
 }
 
@@ -96,6 +95,11 @@ onMounted(()=>{
     videoRef.value.addEventListener("timeupdate", throttle(()=>{
       if(audioPlayer.value) {
         audioPlayer.value.currentTime = videoRef.value?.currentTime || 0
+
+        presentIndex.value = srtItemList.value.findIndex(item => {
+          return item.data.start / 1000 <= (videoRef.value?.currentTime || 0)
+            && item.data.end / 1000 >= (videoRef.value?.currentTime|| 0)
+        })
       }
     }, 50))
     videoRef.value.addEventListener("pause", ()=>{
@@ -122,6 +126,7 @@ onMounted(()=>{
         :key="index" 
         :node="node" 
         :index="index"
+        :selected="index === presentIndex"
         @click="selectItem(index)"
         @change="toggleChecked(index)"
       ></subtitle-item>

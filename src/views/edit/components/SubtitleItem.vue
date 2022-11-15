@@ -17,8 +17,12 @@ const props = defineProps({
     type: Object as PropType<SrtItem>,
     required: true,
   },
-  index:{
+  index: {
     type: Number,
+    required: true,
+  },
+  selected: {
+    type: Boolean,
     required: true,
   },
 })
@@ -34,9 +38,10 @@ const change = () => {
   <div class="flex justify-between
     m-2 py-4 
     bg-white
-    border border-solid border-[#F0F0F0] rounded-[4px]
+    border border-solid  rounded-[4px]
     cursor-pointer
     leading-6"
+    :class="selected ? 'border-[#0063b1]' : 'border-[#F0F0F0]'"
   >
     <div class="w-[64px] flex justify-center items-center" @click.stop="change">
       <input type="checkbox" :checked="node.checked" />
