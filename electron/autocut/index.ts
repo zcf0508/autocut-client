@@ -81,3 +81,81 @@ export function generateSubtitle(
   });
 
 }
+
+type CutStatus = "error" | "success" | "processing"
+
+export function cutVideo(
+  excutePath: string, 
+  videoFilePath: string,
+  srtFilePath:string,
+  cb: (status: CutStatus, msg: string, process?: number) => any,
+){
+  let fail = false
+  const p = spawn(excutePath, ["-c", `${videoFilePath}`, `${srtFilePath}`]) 
+  
+  const stdoutLineReader = readline.createInterface({
+    input: p.stdout,
+    output: p.stdin,
+    terminal: false,
+  });
+  stdoutLineReader.on("line", (line) => {
+    console.log(`stdout: ${line}`)
+  })
+
+  const stderrLineReader = readline.createInterface({
+    input: p.stderr,
+    output: p.stdin,
+    terminal: false,
+  });
+  stderrLineReader.on("line", (line) => {
+    console.log(`stderr: ${line}`)
+
+    if (line.indexOf("exists, skipping")>= 0){
+      fail = true
+      cb("success", "cuted file already exist")
+      return
+    }
+
+    if (line.indexOf("based on") >= 0){
+      cb(
+        "processing",
+        "transcribing",
+        0,
+      )
+    }
+    if (line.match(/[0-9]*%/)?.length > 0) {
+      const process = parseInt(line.match(/[0-9]*%/)[0])
+      cb(
+        "processing",
+        "transcribing",
+        process,
+      )
+    }
+    if (line.indexOf("Saved video to") >= 0){
+      cb(
+        "success",
+        "saved",
+        100,
+      )
+      return
+    }
+  })
+
+  p.on("error", (err) => {
+    console.log(`err: ${err}`)
+    fail = true
+    cb(
+      "error",
+      `unknown error: ${err}`,
+    )
+    return
+  });
+
+  p.on("close", (code) => {
+    console.log(`child process exited with code ${code}`);
+    if(!fail){
+      cb("success", "close")
+    }
+  });
+
+}

@@ -9,7 +9,7 @@ export interface SrtItem {
     end: number
     text: string
   }
-  checked: boolean
+  checked?: boolean
 }
 
 const props = defineProps({

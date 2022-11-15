@@ -5,7 +5,7 @@ import * as path from "path"
 import StreamZip  from "node-stream-zip"
 import { autocutCheck } from "./check"
 
-const DOWNLOAD_URL = "https://dubai.huali.cafe/autocut/autocut-x86_64.zip"
+const DOWNLOAD_URL = "https://dubai.huali.cafe/autocut/autocut_0.0.3-beta_x86-64.zip"
 
 type DownloadStatus = "downloading" | "extracting" | "error" | "success"
 

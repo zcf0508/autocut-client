@@ -1,5 +1,5 @@
 import {  BrowserWindow, ipcMain, dialog } from "electron"
-import { generateSubtitle } from "../autocut"
+import { cutVideo, generateSubtitle } from "../autocut"
 import { autocutCheck, ffmpegCheck } from "../autocut/check"
 import { downloadAutoCut } from "../autocut/download"
 import { convertVideo, getAudio } from "../ffmpeg"
@@ -69,6 +69,18 @@ export function registerAutoCut(win: BrowserWindow){
     const filePath = args[0] as string
     getAudio(filePath, (status, msg, process) => {
       e.reply("report-convert-audio", {
+        status,
+        msg,
+        process,
+      })
+    })
+  })
+
+  ipcMain.on("start-cut", async (e,...args) => {
+    const videoFilePath = args[0] as string
+    const srtFilePath = args[1] as string
+    cutVideo(excutePath, videoFilePath, srtFilePath, (status, msg, process) => {
+      e.reply("report-cut", {
         status,
         msg,
         process,

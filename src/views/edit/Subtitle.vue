@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import * as fs from "fs"
-import { parseSync, Cue } from "subtitle"
+import { parseSync, Cue, stringifySync } from "subtitle"
 import { type SrtItem } from "./components/SubtitleItem.vue"
 import SubtitleItem from "./components/SubtitleItem.vue";
-import { throttle } from "lodash-es"
+import { throttle, cloneDeep } from "lodash-es"
 // @ts-ignore
 import { useAVWaveform } from "vue-audio-visual"
+import { ipcRenderer } from "electron";
 
 const props = defineProps({
   filePath: {
@@ -21,8 +22,6 @@ const props = defineProps({
     required: true,
   },
 })
-
-
 
 /**
  * 解析后的字幕列表
@@ -115,12 +114,40 @@ onMounted(()=>{
   }
 })
 
+const save = ()=>{
+  const list = cloneDeep(srtItemList.value.filter(i => i.checked))
+  const content = list.map(i => {
+    delete i.checked
+    return i
+  })
 
+  const cutSrtPath = props.filePath.slice(0, props.filePath.lastIndexOf("."))+ "_cut.srt"
+  fs.writeFileSync(
+    cutSrtPath, 
+    stringifySync(content, { format: "SRT" }), 
+    "utf-8",
+  )
+
+  ipcRenderer.send("start-cut", props.filePath, cutSrtPath)
+}
+
+ipcRenderer.on("report-cut",(e,...args) => {
+  const res = args[0]
+
+  if(res.status === "error") {
+    alert(res.msg)
+  }
+  if(res.status === "success") {
+    console.log("字幕生成完成")
+    alert(res.msg)
+  }
+
+})
 </script>
 
 <template>
   <div class="flex justify-between w-[94%] mx-auto h-full">
-    <div class="w-[460px] mr-4  overflow-y-scroll" id="list">
+    <div class="w-[460px] mr-4  overflow-y-scroll relative" id="list">
       <subtitle-item 
         v-for="(node, index) in srtItemList" 
         :key="index" 
@@ -130,6 +157,27 @@ onMounted(()=>{
         @click="selectItem(index)"
         @change="toggleChecked(index)"
       ></subtitle-item>
+      <div class="sticky bottom-0 h-[48px] flex justify-between px-2">
+        <button
+          class="h-[40px] w-[45%] px-2
+            bg-[#0063b1] text-white 
+            rounded-[4px] border-none  whitespace-nowrap 
+            cursor-pointer"
+          @click="save"
+        >
+          导出视频
+        </button>
+        <button
+          class="h-[40px] w-[45%] px-2
+            bg-[#3e89c3] text-white 
+            rounded-[4px] border-none  whitespace-nowrap 
+            cursor-not-allowed"
+          title="暂不支持"
+          disabled
+        >
+          导出到 Pr (暂不支持)
+        </button>
+      </div>
     </div>
     <div class="w-[calc(100%-460px)]">
       <video ref="videoRef" class="w-full" controls :src="filePath"></video>
