@@ -32,7 +32,9 @@ const tasksStatus = reactive({
 })
 
 const status = computed(() => {
-  return tasksStatus.transcribe && tasksStatus.convertVideo && tasksStatus.convertAudio
+  return tasksStatus.transcribe === "success" 
+    && tasksStatus.convertVideo === "success" 
+    && tasksStatus.convertAudio === "success" 
 })
 
 const start = () => {
@@ -154,8 +156,8 @@ onUnmounted(()=>{
       <template v-else>
         <div>已选文件： {{ filePath }}</div>
         <div v-if="tasksStatus.transcribe">
-          <span>生成字幕: </span>
-          <span v-if="tasksStatus.transcribe === 'processing' && transcribeProcess > 0">
+          <span>字幕生成: </span>
+          <span v-if="tasksStatus.transcribe === 'processing' && transcribeProcess >= 0">
             {{ transcribeProcess }}%
           </span>
           <span v-if="tasksStatus.transcribe === 'success'"> 成功 </span>
