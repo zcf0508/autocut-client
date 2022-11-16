@@ -114,6 +114,8 @@ onMounted(()=>{
   }
 })
 
+const exporting = ref(false)
+
 const save = ()=>{
   const list = cloneDeep(srtItemList.value.filter(i => i.checked))
   const content = list.map(i => {
@@ -129,6 +131,7 @@ const save = ()=>{
   )
 
   ipcRenderer.send("start-cut", props.filePath, cutSrtPath)
+  exporting.value = true
 }
 
 ipcRenderer.on("report-cut",(e,...args) => {
@@ -136,55 +139,68 @@ ipcRenderer.on("report-cut",(e,...args) => {
 
   if(res.status === "error") {
     alert(res.msg)
+    exporting.value = false
   }
   if(res.status === "success") {
     console.log("字幕生成完成")
     alert(res.msg)
+    exporting.value = false
   }
 
 })
 </script>
 
 <template>
-  <div class="flex justify-between w-[94%] mx-auto h-full">
-    <div class="w-[460px] mr-4  overflow-y-scroll relative" id="list">
-      <subtitle-item 
-        v-for="(node, index) in srtItemList" 
-        :key="index" 
-        :node="node" 
-        :index="index"
-        :selected="index === presentIndex"
-        @click="selectItem(index)"
-        @change="toggleChecked(index)"
-      ></subtitle-item>
-      <div class="sticky bottom-0 h-[48px] flex justify-between px-2">
-        <button
-          class="h-[40px] w-[45%] px-2
-            bg-[#0063b1] text-white 
-            rounded-[4px] border-none  whitespace-nowrap 
-            cursor-pointer"
-          @click="save"
-        >
-          导出视频
-        </button>
-        <button
-          class="h-[40px] w-[45%] px-2
-            bg-[#3e89c3] text-white 
-            rounded-[4px] border-none  whitespace-nowrap 
-            cursor-not-allowed"
-          title="暂不支持"
-          disabled
-        >
-          导出到 Pr (暂不支持)
-        </button>
+  <div class="relative h-full">
+    <div class="flex justify-between w-[94%] mx-auto h-full">
+      <div class="w-[460px] mr-4  overflow-y-scroll relative" id="list">
+        <subtitle-item 
+          v-for="(node, index) in srtItemList" 
+          :key="index" 
+          :node="node" 
+          :index="index"
+          :selected="index === presentIndex"
+          @click="selectItem(index)"
+          @change="toggleChecked(index)"
+        ></subtitle-item>
+        <div class="sticky bottom-0 h-[48px] flex justify-between px-2">
+          <button
+            class="h-[40px] w-[45%] px-2
+              bg-[#0063b1] text-white 
+              rounded-[4px] border-none  whitespace-nowrap 
+              cursor-pointer"
+            @click="save"
+          >
+            导出视频
+          </button>
+          <button
+            class="h-[40px] w-[45%] px-2
+              bg-[#3e89c3] text-white 
+              rounded-[4px] border-none  whitespace-nowrap 
+              cursor-not-allowed"
+            title="暂不支持"
+            disabled
+          >
+            导出到 Pr (暂不支持)
+          </button>
+        </div>
+      </div>
+      <div class="w-[calc(100%-460px)]">
+        <video ref="videoRef" class="w-full" controls :src="filePath"></video>
+        <div class="mt-2">
+          <audio ref="audioPlayer" :src="audioFilePath" controls class="hidden" muted/>
+          <canvas ref="audioCanvas" />
+        </div>
       </div>
     </div>
-    <div class="w-[calc(100%-460px)]">
-      <video ref="videoRef" class="w-full" controls :src="filePath"></video>
-      <div class="mt-2">
-        <audio ref="audioPlayer" :src="audioFilePath" controls class="hidden" muted/>
-        <canvas ref="audioCanvas" />
-      </div>
+    <div 
+      v-if="exporting"
+      class="absolute top-0 right-0 bottom-0 left-0 
+      bg-[rgba(0,99,177,0.3)] font-bold text-white
+      flex justify-center items-center "
+      @click.stop
+    >
+      导出中...
     </div>
   </div>
 </template>
