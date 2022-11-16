@@ -25,7 +25,6 @@ export async function downloadAutoCut(
   console.log(`arch: ${arch}`)
   if(platform.indexOf("win")>=0 && arch === "x64") {
     const zipFilePath = path.join(savePath, "autocut.zip")
-    const file = fs.createWriteStream(zipFilePath);
     const excutePath = path.join(savePath,"autocut","autocut.exe")
 
     if(fs.existsSync(excutePath)){
@@ -34,6 +33,12 @@ export async function downloadAutoCut(
         return
       }
     }
+    if(fs.existsSync(zipFilePath)){
+      unzip(zipFilePath, savePath, excutePath, cb)
+      return
+    }
+
+    const file = fs.createWriteStream(zipFilePath);
 
     https.get(DOWNLOAD_URL, (res)=>{
       if(res.statusCode !== 200) {
@@ -60,30 +65,7 @@ export async function downloadAutoCut(
       file.on("finish", ()=>{
         file.close();
 
-        const zip = new StreamZip({
-          file: zipFilePath,
-          storeEntries: true,
-        });
-        const extractedPath = savePath
-
-
-        zip.on("ready", () => {
-          cb("extracting", "解压中" )
-          zip.extract(null, extractedPath, (err, count) => {
-            console.log(err ? "Extract error" : `Extracted ${count} entries`);
-            zip.close();
-
-            cb("success", excutePath )
-            return
-          });
-        })
-
-        zip.on("error",(err)=>{
-          console.error(err)
-          zip.close();
-          cb("error", `解压失败：${err}`)
-          return
-        })
+        unzip(zipFilePath, savePath, excutePath, cb)
 
       }).on("error", (err)=>{
         console.error(err)
@@ -105,4 +87,32 @@ export async function downloadAutoCut(
     return
   }
 
+}
+
+
+function unzip(zipFilePath, savePath, excutePath, cb){
+  const zip = new StreamZip({
+    file: zipFilePath,
+    storeEntries: true,
+  });
+  const extractedPath = savePath
+
+
+  zip.on("ready", () => {
+    cb("extracting", "解压中", 99 )
+    zip.extract(null, extractedPath, (err, count) => {
+      console.log(err ? "Extract error" : `Extracted ${count} entries`);
+      zip.close();
+
+      cb("success", excutePath )
+      return
+    });
+  })
+
+  zip.on("error",(err)=>{
+    console.error(err)
+    zip.close();
+    cb("error", `解压失败：${err}`)
+    return
+  })
 }

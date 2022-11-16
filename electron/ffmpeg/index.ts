@@ -1,3 +1,4 @@
+import * as fs from "fs"
 import { spawn } from "child_process"
 import readline from "readline"
 
@@ -13,12 +14,20 @@ export function getAudio(
   cb: (status: ProcessStatus, msg: string, process?: number) => any,
 ){
   let success = false
+  const exportPath = `${video.slice(0, video.lastIndexOf("."))}.wav`
+  if(fs.existsSync(exportPath)){
+    cb(
+      "success",
+      "exists, skipping",
+    )
+    return 
+  }
   const p = spawn(
     "ffmpeg",
     [
       "-i", `${video}`, "-y", 
       "-vn",  "-acodec", "pcm_s16le", "-ac", "1", "-ar", "8000", 
-      `${video.slice(0, video.lastIndexOf("."))}.wav`,
+      exportPath,
     ],
   )
   const stdoutLineReader = readline.createInterface({
@@ -61,13 +70,21 @@ export function convertVideo(
   cb: (status: ProcessStatus, msg: string, process?: number) => any,
 ){
   let success = false
+  const exportPath = `${video.slice(0, video.lastIndexOf("."))}.mp4`
+  if(fs.existsSync(exportPath)){
+    cb(
+      "success",
+      "exists, skipping",
+    )
+    return 
+  }
   const p = spawn(
     "ffmpeg",
     [
       "-i", `${video}`, "-y", 
       "-vcodec", "libx264", 
       "-threads", "8", "-preset", "ultrafast", 
-      `${video.slice(0, video.lastIndexOf("."))}.mp4`,
+      exportPath,
     ],
   )
   const stdoutLineReader = readline.createInterface({

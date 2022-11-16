@@ -44,6 +44,7 @@ ipcRenderer.on("report-download",(e,...args) => {
   
   if(res.status === "extracting") {
     downloadStatus.value = "解压中"
+    downloadProcess.value = res.process!
   }
 
   if(res.status === "error") {
