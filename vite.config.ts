@@ -58,6 +58,14 @@ export default defineConfig({
     // Use Node.js API in the Renderer-process
     renderer({
       nodeIntegration: true,
+      optimizeDeps: {
+        include: [
+          "fs/promises",
+          "process",
+          "path",
+          "fs",
+        ],
+      },
     }),
   ],
   server: process.env.VSCODE_DEBUG ? (() => {

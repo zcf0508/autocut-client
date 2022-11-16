@@ -23,8 +23,8 @@ specifiers:
   unplugin-auto-import: ^0.11.4
   unplugin-vue-components: ^0.22.9
   vite: ^3.2.2
-  vite-electron-plugin: ^0.5.0
-  vite-plugin-electron-renderer: ^0.10.2
+  vite-electron-plugin: ^0.5.1
+  vite-plugin-electron-renderer: ^0.11.1
   vue: ^3.2.40
   vue-audio-visual: ^3.0.1
   vue-router: ^4.1.6
@@ -57,7 +57,7 @@ devDependencies:
   unplugin-vue-components: 0.22.9_vue@3.2.45
   vite: 3.2.3
   vite-electron-plugin: 0.5.1
-  vite-plugin-electron-renderer: 0.10.3
+  vite-plugin-electron-renderer: 0.11.1
   vue: 3.2.45
   vue-audio-visual: 3.0.1
   vue-router: 4.1.6_vue@3.2.45
@@ -4055,8 +4055,10 @@ packages:
       fast-glob: 3.2.12
     dev: true
 
-  /vite-plugin-electron-renderer/0.10.3:
-    resolution: {integrity: sha512-Q+mIxEA16YYUv1XdOjx12zf2rDp+Ki/VcpG3D8p7mSaTXyP06032xLY3FUC+3P/665ZKWwJn9DHJXIOrLE8Wmg==}
+  /vite-plugin-electron-renderer/0.11.1:
+    resolution: {integrity: sha512-3DDhsooh3pXNUpPZwVKhpj4heezBKzUbFrTVOsCtFEuoH9foq98gRCpJBpfawjpY9hvskg75BgkM/6LmyInatg==}
+    peerDependencies:
+      esbuild: '*'
     dependencies:
       lib-esm: 0.3.0
     dev: true

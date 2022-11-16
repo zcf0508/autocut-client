@@ -4,6 +4,7 @@ import { hamiVuex } from "@/store";
 import router from "@/router";
 import "./samples/node-api"
 import "uno.css"
+// @ts-ignore
 import { AVPlugin } from "vue-audio-visual"
 
 createApp(App)

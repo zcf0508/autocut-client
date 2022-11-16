@@ -1,29 +1,33 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
+import Layout from "@/layout/index.vue"
+import Status from "@/views/status/index.vue"
+import Edit from "@/views/edit/index.vue"
+import SetupAutocut from "@/views/setup/autocut.vue"
 
 export const routes = [
   {
     path: "/",
-    component: () => import("@/layout/index.vue"),
+    component: Layout,
     redirect: "/status",
     children: [
       {
         path: "/status",
-        component: () => import("@/views/status/index.vue"),
+        component: Status,
       },
       {
         path: "/edit",
-        component: () => import("@/views/edit/index.vue"),
+        component: Edit,
       },
     ],
   },
   {
     path: "/setup/autocut",
-    component: () => import("@/views/setup/autocut.vue"),
+    component: SetupAutocut,
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 });
 
