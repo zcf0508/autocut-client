@@ -1,4 +1,4 @@
-import { defineConfig, presetUno, presetIcons, presetAttributify } from "unocss";
+import { defineConfig, presetUno, presetIcons } from "unocss";
 
 export default defineConfig({
   presets: [
@@ -9,10 +9,6 @@ export default defineConfig({
       extraProperties: {
         display: "inline-block",
       },
-    }),
-    presetAttributify({
-      prefix: "w:",
-      prefixedOnly: false,
     }),
   ],
 });

@@ -1,4 +1,5 @@
 import {  BrowserWindow, ipcMain, dialog } from "electron"
+import { exportToPr, getSpec } from "../adobe"
 import { cutVideo, generateSubtitle } from "../autocut"
 import { autocutCheck, ffmpegCheck } from "../autocut/check"
 import { downloadAutoCut } from "../autocut/download"
@@ -85,6 +86,32 @@ export function registerAutoCut(win: BrowserWindow){
         msg,
         process,
       })
+    })
+  })
+
+  ipcMain.on("check-pr-versions", async (e,...args) => {
+    const version = await getSpec()
+    e.reply("report-pr-versions", version)
+  })
+
+  ipcMain.handle("select-prproj-save-directory", async (e, ...args) => {
+    const res = await dialog.showOpenDialog(win, {
+      title: "请选择 Pr 工程路径",
+      properties: ["openDirectory", "createDirectory"],
+
+    })
+    return res
+  })
+
+  ipcMain.on("export-to-pr", (e,...args) => {
+    const targetDir = args[0] as string
+    const videoFile = args[1] as string
+    const srtFile = args[2] as string
+    const clipPoints = args[3] as Array<string>
+    const spec = args[4] as string
+
+    exportToPr(targetDir, videoFile, srtFile, clipPoints, spec, (status, msg)=>{
+      console.log(status)
     })
   })
 }

@@ -24,3 +24,6 @@ dist-ssr
 release
 .vscode/.debug.env
 dist-electron
+
+# ignore adobe esdebugger core file
+**/adobe-lib/**

@@ -7,7 +7,12 @@
   "directories": {
     "output": "release/${version}"
   },
+  extraResources: {
+    from: './public/resources',
+    to: './'
+  },
   "files": [
+    "adobe-lib",
     "dist-electron",
     "dist"
   ],

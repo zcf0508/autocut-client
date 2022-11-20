@@ -3,6 +3,7 @@ import * as fs from "fs"
 import { parseSync, Cue, stringifySync } from "subtitle"
 import { type SrtItem } from "./components/SubtitleItem.vue"
 import SubtitleItem from "./components/SubtitleItem.vue";
+import ExportToPr from "./components/exportToPr.vue";
 import { throttle, cloneDeep } from "lodash-es"
 // @ts-ignore
 import { useAVWaveform } from "vue-audio-visual"
@@ -116,17 +117,19 @@ onMounted(()=>{
 
 const exporting = ref(false)
 
-const save = ()=>{
-  const list = cloneDeep(srtItemList.value.filter(i => i.checked))
-  const content = list.map(i => {
+const editedlist = computed(()=>{
+  return cloneDeep(srtItemList.value.filter(i => i.checked)).map(i => {
     delete i.checked
     return i
   })
+})
+
+const save = ()=>{
 
   const cutSrtPath = props.filePath.slice(0, props.filePath.lastIndexOf("."))+ "_cut.srt"
   fs.writeFileSync(
     cutSrtPath, 
-    stringifySync(content, { format: "SRT" }), 
+    stringifySync(editedlist.value, { format: "SRT" }), 
     "utf-8",
   )
 
@@ -148,11 +151,19 @@ ipcRenderer.on("report-cut",(e,...args) => {
   }
 
 })
+
+const showVideo = ref(true)
 </script>
 
 <template>
   <div class="relative h-full">
-    <div class="flex justify-between w-[94%] mx-auto h-full">
+    <div class="w-[94%] mx-auto my-2">
+      <div class="p-2 flex items-center cursor-pointer" @click="$router.push('/status')">
+        <div class="i-material-symbols:chevron-left"></div>
+        返回
+      </div>
+    </div>
+    <div class="flex justify-between w-[94%] mx-auto h-[calc(100%-37px-16px)]">
       <div class="w-[460px] mr-4  overflow-y-scroll relative" id="list">
         <subtitle-item 
           v-for="(node, index) in srtItemList" 
@@ -173,20 +184,22 @@ ipcRenderer.on("report-cut",(e,...args) => {
           >
             导出视频
           </button>
-          <button
-            class="h-[40px] w-[45%] px-2
-              bg-[#3e89c3] text-white 
-              rounded-[4px] border-none  whitespace-nowrap 
-              cursor-not-allowed"
-            title="暂不支持"
-            disabled
-          >
-            导出到 Pr (暂不支持)
-          </button>
+          <export-to-pr
+            :video-path="props.filePath"
+            :edited-srt="editedlist"
+            @open="showVideo = false" 
+            @close="showVideo = true"
+          ></export-to-pr>
         </div>
       </div>
       <div class="w-[calc(100%-460px)]">
-        <video ref="videoRef" class="w-full" controls :src="filePath"></video>
+        <video 
+          ref="videoRef" 
+          v-show="showVideo" 
+          controls
+          class="w-full" 
+          :src="filePath"
+        ></video>
         <div class="mt-2">
           <audio ref="audioPlayer" :src="audioFilePath" controls class="hidden" muted/>
           <canvas ref="audioCanvas" />
@@ -200,7 +213,7 @@ ipcRenderer.on("report-cut",(e,...args) => {
       flex justify-center items-center "
       @click.stop
     >
-      导出中...
+      导出中，请耐心等待...
     </div>
   </div>
 </template>

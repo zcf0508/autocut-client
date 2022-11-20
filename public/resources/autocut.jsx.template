@@ -1,0 +1,41 @@
+var projPath = "{{projPath}}";
+var videoPath = "{{videoPath}}";
+var srtPath = "{{srtPath}}";
+var clipPoints = "{{clipPoints}}".split(",");
+
+
+app.enableQE();
+
+app.openDocument(projPath);
+var root = app.project.rootItem;
+app.project.createNewSequence("序列 01", "seq01");
+
+app.project.importFiles([videoPath]);
+var video = root.children[1];
+var seq = app.project.activeSequence;
+var time = seq.zeroPoint;
+seq.videoTracks[0].insertClip(video, time);
+// 获取视频轨道
+var videoTrack = qe.project.getActiveSequence().getVideoTrackAt(0);
+for (var i = 0; i < clipPoints.length; i++) {
+  var point = new Time()
+  point.seconds = Number(clipPoints[i])
+  videoTrack.razor(
+    point.getFormatted(seq.getSettings().videoFrameRate, seq.getSettings().videoDisplayFormat), 
+    true, 
+    true
+  );
+}
+
+app.project.importFiles([srtPath]);
+var srt = root.children[2];
+var seq = app.project.activeSequence;
+var time = seq.zeroPoint;
+seq.videoTracks[1].insertClip(srt, time);
+// 获取字幕轨道
+var srtTrack = qe.project.getActiveSequence().getVideoTrackAt(1);
+for (var i = 0; i < clipPoints.length; i++) {
+  var point = new Time()
+  point.seconds = Number(clipPoints[i])
+  srtTrack.razor(point.getFormatted(seq.getSettings().videoFrameRate, seq.getSettings().videoDisplayFormat), true, true);
+}
