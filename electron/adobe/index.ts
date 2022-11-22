@@ -1,7 +1,17 @@
 import path from "path"
 import * as fs from "fs"
+import * as fastXMLParser from "fast-xml-parser"
 
 const prod = import.meta.env.PROD
+
+const ATTR_PREFIX = "@";
+const TEXT_NODE_NAME = "#value";
+const XML_OPTIONS = {
+  attributeNamePrefix: ATTR_PREFIX,
+  ignoreAttributes: false,
+  parseAttributeValue: true,
+  textNodeName: TEXT_NODE_NAME,
+};
 
 type EXTENSION_SPEC_NAME =  "vscesd";
 type CoreLib = {
@@ -20,7 +30,7 @@ type CoreLib = {
   /**
    * 检查指定程序是否正在运行
    */
-  esdGetApplicationRunning:(spen: string) => {status:number, isRunning: string};
+  esdGetApplicationRunning:(spen: string) => {status:number, isRunning: boolean};
   /**
    * 转换文件地址格式
    */
@@ -38,6 +48,7 @@ type CoreLib = {
    * 清理
    */
   esdCleanup: () => {status: number};
+  esdPumpSession: (handler: Function) => any
 }
 
 let coreLib = undefined as CoreLib
@@ -71,9 +82,8 @@ function GetCoreLib() {
 function initCore(){
   return new Promise<CoreLib>((resolve, reject) => {
     const core = GetCoreLib();
-    console.log(core.esdCleanup().status)
     const result = core.esdInitialize("vscesd", process.pid);
-    console.log("init result " + result.status)
+    console.log("init result " + JSON.stringify(result))
     if (result.status === 0 || result.status === 11) {
       resolve(core)
     } else {
@@ -103,7 +113,10 @@ function createPrProject(targetDir: string, videoPath: string){
     }
   }catch(e){
     console.error(e)
-    return ""
+    return {
+      proj: "",
+      video: "",
+    }
   }
 }
 
@@ -117,9 +130,9 @@ function createJsxFile(
     "utf-8",
   )
 
-  jsxTemplate = jsxTemplate.replace("{{projPath}}", proj.replaceAll("\\","\\\\"))
-  jsxTemplate = jsxTemplate.replace("{{videoPath}}", videoFile.replaceAll("\\","\\\\"))
-  jsxTemplate = jsxTemplate.replace("{{srtPath}}", srtFile.replaceAll("\\","\\\\"))
+  jsxTemplate = jsxTemplate.replace("{{projPath}}", proj.replaceAll("\\","\\\\").replaceAll(" ","\ "))
+  jsxTemplate = jsxTemplate.replace("{{videoPath}}", videoFile.replaceAll("\\","\\\\").replaceAll(" ","\ "))
+  jsxTemplate = jsxTemplate.replace("{{srtPath}}", srtFile.replaceAll("\\","\\\\").replaceAll(" ","\ "))
   jsxTemplate = jsxTemplate.replace("{{clipPoints}}", clipPoints.join(","))
 
   fs.writeFileSync(path.join(targetDir, "autocut.jsx"), jsxTemplate)
@@ -127,6 +140,43 @@ function createJsxFile(
   return path.join(targetDir, "autocut.jsx")
 }
 
+
+const genderOnUnfilteredMessageReceived = (serialNumber:number, cb:({ reason, message })=>any) => {
+  return (reason, message) => {
+    console.log("OnUnfilteredMessageReceived reason", reason)
+    console.log("OnUnfilteredMessageReceived message", message)
+    if(message.serialNumber === serialNumber && reason === 3) {
+      cb({ reason, message })
+    }
+  }
+}
+
+function connectPromise(cb:()=>number, next:(message:any)=>any){
+  return new Promise<void>(async (resolve, reject) => {
+    const core = await initCore()
+
+    const serialNumber = cb()
+    if(!serialNumber) {
+      reject()
+    }
+
+    const timer = setInterval(
+      (handler)=>{
+        GetCoreLib().esdPumpSession(handler);
+      },
+      5,
+      genderOnUnfilteredMessageReceived(serialNumber, async ({ reason, message })=>{
+        const _message = JSON.parse(JSON.stringify(message))
+        clearInterval(timer)
+        await next(_message)
+        core.esdCleanup()
+        resolve()
+      }),
+    )
+    timer.unref();
+    
+  })
+}
 
 export async function exportToPr(
   targetDir: string, 
@@ -137,7 +187,7 @@ export async function exportToPr(
   cb:(status: string, msg: string) => any,
 ) {
   const { proj, video } = createPrProject(targetDir, videoFile)
-  if(!proj){
+  if(!proj || !video){
     cb("error", "项目创建失败")
     return 
   }
@@ -147,10 +197,60 @@ export async function exportToPr(
     return 
   }
 
+  
+  let requestEngine = ""
+  try{
+    await connectPromise(()=>{
+
+      const connectRes = GetCoreLib().esdSendDebugMessage(spec, "<connect/>", true, 0)
+      console.log("connectRes", connectRes)
+      if(connectRes.status !== 0) {
+        GetCoreLib().esdCleanup()
+        cb("error", "Connect 脚本运行失败")
+      }
+      return connectRes.serialNumber
+
+    }, async (message)=>{
+      console.log(message.body)
+      if(!message){
+        cb("error", "无法识别引擎")
+        return
+      }
+      const res = fastXMLParser.parse(message.body, XML_OPTIONS);
+      const engineDefs = res.engines.engine;
+      const engineNames = Array.isArray(engineDefs) 
+        ? engineDefs.map(engine => { return engine["@name"]; }) : [engineDefs["@name"]];
+      console.log(engineNames)
+      // TODO: 可能存在多个引擎
+      if (engineNames.length === 1) {
+        requestEngine = engineNames[0];
+      }
+      return 
+    })
+  }catch(e) {
+    console.error(e)
+    cb("error", "发生异常")
+    GetCoreLib().esdCleanup()
+    return
+  }
+
+  console.log(requestEngine)
+
+  
   const core = await initCore()
+  const runingRes = core.esdGetApplicationRunning(spec)
+  console.log("runingRes ", JSON.stringify(runingRes))
+  
+  if(runingRes.status!==0 || runingRes.isRunning === false) {
+    core.esdCleanup()
+    cb("error", "请先打开 Premiere Pro " + spec)
+    return
+  }
   // eslint-disable-next-line max-len
-  const body = `<eval engine="main" file="${core.esdPathToUri(jsx).uri}" debug="0"><source><![CDATA[${fs.readFileSync(jsx)}]]></source></eval>`
+  const body = `<eval engine="${requestEngine}" file="${core.esdPathToUri(jsx).uri}" debug="0"><source><![CDATA[${fs.readFileSync(jsx)}]]></source></eval>`
+  console.log("body: " + body)
   const result = core.esdSendDebugMessage(spec, body, true, 0)
+  console.log("exportToPr result: " + JSON.stringify(result))
   core.esdCleanup()
   if(result.status!==0) {
     cb("error", "脚本运行失败")
@@ -225,7 +325,7 @@ export async function getSpec() {
   }>
   const core = await initCore()
   const res = core.esdGetInstalledApplicationSpecifiers()
-
+  console.log("InstalledApplicationSpecifiers", JSON.stringify(res))
   if(res.status === 0) {
     let specifiers = res.specifiers
     if(specifiers.length === 0){

@@ -57,6 +57,8 @@
   ],
   "dependencies": {
     "buffer": "^6.0.3",
-    "node-stream-zip": "^1.15.0"
+    "fast-xml-parser": "^3.21.1",
+    "node-stream-zip": "^1.15.0",
+    "strnum": "^1.0.5"
   }
 }

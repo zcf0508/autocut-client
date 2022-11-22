@@ -14,9 +14,11 @@ specifiers:
   eslint: ^8.27.0
   eslint-plugin-import: ^2.26.0
   eslint-plugin-vue: ^9.7.0
+  fast-xml-parser: ^3.21.1
   hami-vuex: ^0.1.4
   lodash-es: ^4.17.21
   node-stream-zip: ^1.15.0
+  strnum: ^1.0.5
   subtitle: ^4.2.1
   typescript: ^4.8.4
   unocss: ^0.46.5
@@ -33,7 +35,9 @@ specifiers:
 
 dependencies:
   buffer: 6.0.3
+  fast-xml-parser: 3.21.1
   node-stream-zip: 1.15.0
+  strnum: 1.0.5
 
 devDependencies:
   '@iconify/json': 2.1.136
@@ -2222,6 +2226,13 @@ packages:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
     dev: true
 
+  /fast-xml-parser/3.21.1:
+    resolution: {integrity: sha512-FTFVjYoBOZTJekiUsawGsSYV9QL0A+zDYCRj7y34IO6Jg+2IMYEtQa+bbictpdpV8dHxXywqU7C0gRDEOFtBFg==}
+    hasBin: true
+    dependencies:
+      strnum: 1.0.5
+    dev: false
+
   /fastq/1.13.0:
     resolution: {integrity: sha512-YpkpUnK8od0o1hmeSc7UUs/eB/vIPWJYjKck2QKIzAf71Vm1AAQ3EbuZB3g2JIy+pg+ERD0vqI79KyZiB2e2Nw==}
     dependencies:
@@ -3722,6 +3733,10 @@ packages:
     dependencies:
       acorn: 8.8.1
     dev: true
+
+  /strnum/1.0.5:
+    resolution: {integrity: sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==}
+    dev: false
 
   /subtitle/4.2.1:
     resolution: {integrity: sha512-ohV7DcQAYjoO8SDTZHaD912g6K+JktbLERlkZyuoNWSXboOOdIvuriF4fZC0T6lbVeiqLfR8mmw3CxIJ5+UTuw==}
