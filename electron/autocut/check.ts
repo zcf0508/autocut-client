@@ -28,8 +28,7 @@ export function ffmpegCheck() {
  */
 export function autocutCheck(excutePath:string){
   return new Promise<boolean>((resolve, reject) => {
-    const autocut = exec(`${excutePath} -h`)
-
+    const autocut = exec(`"${excutePath}" -h`)
     autocut.stdout.on("data", (res) => {
       if(res.indexOf("usage: autocut") >= 0){
         resolve(true)

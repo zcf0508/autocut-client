@@ -15,7 +15,7 @@ export function generateSubtitle(
   let fail = false
   // let commad = `${excutePath} -t ${filePath}`
   // console.log(commad)
-  const p = spawn(excutePath, ["-t", `${filePath}`])
+  const p = spawn(excutePath.replaceAll("\\","\\\\").replaceAll(" ","\ "), ["-t", `${filePath}`])
 
   const stdoutLineReader = readline.createInterface({
     input: p.stdout,
@@ -91,7 +91,10 @@ export function cutVideo(
   cb: (status: CutStatus, msg: string, process?: number) => any,
 ){
   let fail = false
-  const p = spawn(excutePath, ["-c", `${videoFilePath}`, `${srtFilePath}`]) 
+  const p = spawn(
+    excutePath.replaceAll("\\","\\\\").replaceAll(" ","\ "),
+    ["-c", `${videoFilePath}`, `${srtFilePath}`],
+  )
   
   const stdoutLineReader = readline.createInterface({
     input: p.stdout,
