@@ -24,8 +24,8 @@ export async function downloadAutoCut(
   console.log(`platform: ${platform}`)
   console.log(`arch: ${arch}`)
   if(platform.indexOf("win")>=0 && arch === "x64") {
-    const zipFilePath = path.join(savePath, "autocut.zip")
-    const excutePath = path.join(savePath,"autocut","autocut.exe")
+    const zipFilePath = path.join(savePath, "autocut.zip").replaceAll("\\","\\\\").replaceAll(" ","\ ")
+    const excutePath = path.join(savePath,"autocut","autocut.exe").replaceAll("\\","\\\\").replaceAll(" ","\ ")
 
     if(fs.existsSync(excutePath)){
       if(await autocutCheck(excutePath)){
@@ -43,6 +43,7 @@ export async function downloadAutoCut(
     https.get(DOWNLOAD_URL, (res)=>{
       if(res.statusCode !== 200) {
         cb("error", `下载失败${res.statusCode}`)
+        fs.unlinkSync(zipFilePath)
         return 
       }
       res.on("end", ()=>{
@@ -70,6 +71,7 @@ export async function downloadAutoCut(
       }).on("error", (err)=>{
         console.error(err)
         file.close();
+        fs.unlinkSync(zipFilePath)
         cb("error", "文件保存失败")
         return
       });
@@ -77,6 +79,7 @@ export async function downloadAutoCut(
       res.pipe(file);
     }).on("error", (e) => {
       console.error(e);
+      fs.unlinkSync(zipFilePath)
       cb("error", `下载失败，请检查网络: ${e}`)
       return
     });
@@ -112,6 +115,7 @@ function unzip(zipFilePath, savePath, excutePath, cb){
   zip.on("error",(err)=>{
     console.error(err)
     zip.close();
+    fs.unlinkSync(zipFilePath)
     cb("error", `解压失败：${err}`)
     return
   })
