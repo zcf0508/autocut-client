@@ -115,7 +115,9 @@ function unzip(zipFilePath, savePath, excutePath, cb){
   zip.on("error",(err)=>{
     console.error(err)
     zip.close();
-    fs.unlinkSync(zipFilePath)
+    if(fs.existsSync(zipFilePath)){
+      fs.unlinkSync(zipFilePath)
+    }
     cb("error", `解压失败：${err}`)
     return
   })
