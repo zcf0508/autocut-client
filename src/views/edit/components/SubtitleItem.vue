@@ -27,10 +27,34 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(["change"])
+const emits = defineEmits(["change", "edit"])
 
 const change = () => {
   emits("change", props.index)
+}
+const textareaRef = ref<HTMLTextAreaElement>()
+const textarea_height = ref(0)
+
+
+const changeTextareaHeight = (e:Event) => {
+  textarea_height.value = (e.target as HTMLInputElement).scrollHeight
+}
+
+onMounted(()=>{
+  nextTick(()=>{
+    if(textareaRef.value) {
+      textarea_height.value = textareaRef.value.scrollHeight
+      textareaRef.value.addEventListener("input", changeTextareaHeight)
+    }
+  })
+})
+
+onUnmounted(()=>{
+  textareaRef.value?.removeEventListener("input", changeTextareaHeight)
+})
+
+const input = (e: Event) => {
+  emits("edit", props.index, (e.target as HTMLInputElement).value)
 }
 </script>
 
@@ -49,12 +73,28 @@ const change = () => {
     <div class="w-[calc(100%-64px)]">
       <div>{{ `${formatTimestamp(node.data.start)} - ${formatTimestamp(node.data.end)}` }}</div>
       <div class="mt-2 pr-2">
-        {{ node.data.text }}
+        <textarea 
+          ref="textareaRef"
+          class="edit border-none w-full text-[14px] p-0"
+          :style="`height: ${textarea_height}px`"
+          :value="node.data.text" 
+          row="2"
+          @input="input" 
+          @click.stop.prevent 
+        />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
+.edit {
+  font-family: -apple-system, "Noto Sans", "Helvetica Neue", Helvetica,
+    "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC",
+    "Source Han Sans SC", "Source Han Sans CN", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei",
+    "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif !important;
+}
+.edit:focus {
+  outline: none;
+}
 </style>

@@ -120,6 +120,7 @@ const exporting = ref(false)
 const editedlist = computed(()=>{
   return cloneDeep(srtItemList.value.filter(i => i.checked)).map(i => {
     delete i.checked
+    i.data.text = i.data.text.replaceAll("< No Speech >", "")
     return i
   })
 })
@@ -153,6 +154,10 @@ ipcRenderer.on("report-cut",(e,...args) => {
 })
 
 const showVideo = ref(true)
+
+const edit = (index:number, val:string) => {
+  srtItemList.value[index].data.text = val
+}
 </script>
 
 <template>
@@ -173,6 +178,7 @@ const showVideo = ref(true)
           :selected="index === presentIndex"
           @click="selectItem(index)"
           @change="toggleChecked(index)"
+          @edit="edit"
         ></subtitle-item>
         <div class="sticky bottom-0 h-[48px] flex justify-between px-2">
           <button
