@@ -6,7 +6,12 @@
     "moduleResolution": "Node",
     "jsx": "preserve",
     "resolveJsonModule": true,
+    "paths": {
+      "~~/*": [
+        "./electron/*"
+      ]
+    },
     "allowSyntheticDefaultImports": true
   },
-  "include": ["package.json", "electron"]
+  "include": ["package.json", "electron", "test", "auto-imports.d.ts"]
 }

@@ -9,7 +9,9 @@
   "scripts": {
     "dev": "vite",
     "format": "eslint --fix --ext .ts --ext .vue ./src ./electron",
-    "build": "vue-tsc --noEmit && vite build && electron-builder"
+    "build": "vue-tsc --noEmit && vite build && electron-builder",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
@@ -30,13 +32,14 @@
     "hami-vuex": "^0.1.4",
     "lodash-es": "^4.17.21",
     "subtitle": "^4.2.1",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.3",
     "unocss": "^0.46.5",
     "unplugin-auto-import": "^0.11.4",
     "unplugin-vue-components": "^0.22.9",
     "vite": "^3.2.2",
     "vite-electron-plugin": "^0.5.1",
     "vite-plugin-electron-renderer": "^0.11.1",
+    "vitest": "^0.25.3",
     "vue": "^3.2.40",
     "vue-audio-visual": "^3.0.1",
     "vue-router": "^4.1.6",
@@ -57,7 +60,7 @@
   ],
   "dependencies": {
     "buffer": "^6.0.3",
-    "fast-xml-parser": "^3.21.1",
+    "fast-xml-parser": "3.21.1",
     "node-stream-zip": "^1.15.0",
     "strnum": "^1.0.5"
   }

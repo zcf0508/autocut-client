@@ -1,4 +1,5 @@
 import { exec } from "child_process"
+import { savePath } from "~~/utils"
 
 export function ffmpegCheck() {
   return new Promise<boolean>((resolve, reject) => {
@@ -28,7 +29,8 @@ export function ffmpegCheck() {
  */
 export function autocutCheck(excutePath:string){
   return new Promise<boolean>((resolve, reject) => {
-    const autocut = exec(`"${excutePath}" -h`)
+    const commad = `"${savePath(excutePath)}" -h`
+    const autocut = exec(commad)
     autocut.stdout.on("data", (res) => {
       if(res.indexOf("usage: autocut") >= 0){
         resolve(true)

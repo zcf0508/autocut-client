@@ -7,16 +7,13 @@ import { autocutCheck } from "./check"
 
 const DOWNLOAD_URL = "https://dubai.huali.cafe/autocut/autocut_0.0.3-beta_x86-64.zip"
 
-type DownloadStatus = "downloading" | "extracting" | "error" | "success"
-
 /**
  * 下载 autocut 程序
  * @param savePath autocut 存放地址
- * @return 返回可执行文件地址
  */
 export async function downloadAutoCut(
   savePath: string, 
-  cb: (status: DownloadStatus, msg: string, process?: number) => any,
+  cb: (status: "downloading" | "extracting" | "error" | "success", msg: string, process?: number) => any,
 ) {
 
   const platform = os.platform()
@@ -93,7 +90,12 @@ export async function downloadAutoCut(
 }
 
 
-function unzip(zipFilePath, savePath, excutePath, cb){
+function unzip(
+  zipFilePath: string, 
+  savePath: string, 
+  excutePath: string, 
+  cb: (status: "extracting" | "success" | "error", msg: string, process?: number) => any,
+){
   const zip = new StreamZip({
     file: zipFilePath,
     storeEntries: true,
@@ -118,7 +120,7 @@ function unzip(zipFilePath, savePath, excutePath, cb){
     if(fs.existsSync(zipFilePath)){
       fs.unlinkSync(zipFilePath)
     }
-    cb("error", `解压失败：${err}`)
+    cb("error", `解压失败：${err}，请重试`)
     return
   })
 }

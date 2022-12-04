@@ -1,5 +1,6 @@
 import { spawn } from "child_process"
 import readline from "readline"
+import { savePath } from "~~/utils"
 
 type GenerateStatus = "processing" | "error" | "success"
 
@@ -14,8 +15,10 @@ export function generateSubtitle(
 ) {
   let fail = false
   // let commad = `${excutePath} -t ${filePath}`
-  // console.log(commad)
-  const p = spawn(excutePath.replaceAll("\\","\\\\").replaceAll(" ","\ "), ["-t", `${filePath}`])
+  const p = spawn(
+    savePath(excutePath), 
+    ["-t", savePath(filePath)],
+  )
 
   const stdoutLineReader = readline.createInterface({
     input: p.stdout,
@@ -92,8 +95,8 @@ export function cutVideo(
 ){
   let fail = false
   const p = spawn(
-    excutePath.replaceAll("\\","\\\\").replaceAll(" ","\ "),
-    ["-c", `${videoFilePath}`, `${srtFilePath}`],
+    savePath(excutePath),
+    ["-c", savePath(videoFilePath), savePath(srtFilePath)],
   )
   
   const stdoutLineReader = readline.createInterface({

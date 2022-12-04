@@ -1,9 +1,11 @@
+/// <reference types="vitest" />
+
 import { rmSync } from "fs"
 import * as path from "path";
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import electron from "vite-electron-plugin"
-import { customStart, loadViteEnv } from "vite-electron-plugin/plugin"
+import { customStart, loadViteEnv, alias } from "vite-electron-plugin/plugin"
 import renderer from "vite-plugin-electron-renderer"
 import pkg from "./package.json"
 import AutoImport from "unplugin-auto-import/vite";
@@ -17,6 +19,12 @@ export default defineConfig({
   define: {
     __VUE_OPTIONS_API__: false, // 不使用 Options Api
   },
+  test: {
+    alias: [
+      {find: "@", replacement: path.resolve(__dirname, "./src/")},
+      {find: "~~", replacement: path.resolve(__dirname, "./electron/")},
+    ],
+  },
   plugins: [
     vue(),
     AutoImport({
@@ -26,16 +34,16 @@ export default defineConfig({
         /\.vue$/,
         /\.vue\?vue/, // .vue
       ],
-      imports: ["vue", "vue-router", "@vueuse/core"],
+      imports: ["vue", "vue-router", "@vueuse/core", "vitest"],
       dirs: ["src/hooks", "src/store", "src/utils", "src/api"],
-      dts: "src/auto-import.d.ts",
+      dts: true,
     }),
     Components({
       /* options */
       dirs: ["src/components"],
       extensions: ["vue"],
       deep: true,
-      dts: "src/components.d.ts",
+      dts: true,
       resolvers: [],
     }),
     UnoCSS(),
@@ -53,6 +61,9 @@ export default defineConfig({
           : []),
         // Allow use `import.meta.env.VITE_SOME_KEY` in Electron-Main
         loadViteEnv(),
+        alias([
+          {find: "~~", replacement: path.resolve(__dirname, "./electron/")},
+        ]),
       ],
     }),
     // Use Node.js API in the Renderer-process
@@ -80,9 +91,9 @@ export default defineConfig({
     assetsDir: "", // #287
   },
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+    alias: [
+      {find: "@", replacement: path.resolve(__dirname, "./src/")},
+    ],
   },
 })
 
