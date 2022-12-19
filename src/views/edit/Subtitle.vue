@@ -170,9 +170,9 @@ const edit = (index:number, val:string) => {
     </div>
     <div class="flex justify-between w-[94%] mx-auto h-[calc(100%-37px-16px)]">
       <div class="w-[460px] mr-4  overflow-y-scroll relative" id="list">
-        <subtitle-item 
+        <subtitle-item
           v-for="(node, index) in srtItemList" 
-          :key="index" 
+          :key="index"
           :node="node" 
           :index="index"
           :selected="index === presentIndex"
@@ -225,7 +225,20 @@ const edit = (index:number, val:string) => {
 </template>
 
 <style scoped>
+/* 滚动槽 */
 #list::-webkit-scrollbar {
-  display: none;
+    width: 6px;
+    height: 6px;
+}
+#list::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(0,0,0,0.06);
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.08);
+}
+/* 滚动条滑块 */
+#list::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(0,0,0,0.12);
+    -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
 }
 </style>
