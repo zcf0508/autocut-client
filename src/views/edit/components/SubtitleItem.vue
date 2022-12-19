@@ -35,6 +35,18 @@ const change = () => {
 const textareaRef = ref<HTMLTextAreaElement>()
 const textarea_height = ref(0)
 
+const itemRef = ref<HTMLElement>()
+
+watch(
+  () => props.selected,
+  (val) => {
+    if(val) {
+      nextTick(()=>{
+        itemRef.value?.scrollIntoView()
+      })
+    }
+  },
+)
 
 const changeTextareaHeight = (e:Event) => {
   textarea_height.value = (e.target as HTMLInputElement).scrollHeight
@@ -66,6 +78,7 @@ const input = (e: Event) => {
     cursor-pointer
     leading-6"
     :class="selected ? 'border-[#0063b1]' : 'border-[#F0F0F0]'"
+    ref="itemRef"
   >
     <div class="w-[64px] flex justify-center items-center" @click.stop="change">
       <input type="checkbox" :checked="node.checked" />
