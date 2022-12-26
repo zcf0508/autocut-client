@@ -38,15 +38,15 @@ const status = computed(() => {
 })
 
 const start = () => {
-  ipcRenderer.send("start-transcribe", filePath.value)
+  ipcRenderer.send("start-transcribe", Buffer.from(filePath.value).toString("base64"))
   // 后缀名不是 mp4
   if(filePath.value.slice(-4) !== ".mp4") {
-    ipcRenderer.send("convert-video", filePath.value)
+    ipcRenderer.send("convert-video", Buffer.from(filePath.value).toString("base64"))
   } else {
     videoPath.value = filePath.value
     tasksStatus.convertVideo = "success"
   }
-  ipcRenderer.send("convert-audio", filePath.value)
+  ipcRenderer.send("convert-audio", Buffer.from(filePath.value).toString("base64"))
 }
 
 interface TranscribeReport {

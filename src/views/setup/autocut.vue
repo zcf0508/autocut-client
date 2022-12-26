@@ -24,7 +24,7 @@ const download = () => {
   if(downloadProcess.value > 0 || autocutStatus.value){
     return
   }
-  ipcRenderer.send("download-autocut", configStore.installPath)
+  ipcRenderer.send("download-autocut", Buffer.from(installPath.value).toString("base64"))
 }
 const debounceDownload = debounce(download, 500)
 

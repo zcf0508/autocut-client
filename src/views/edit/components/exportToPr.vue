@@ -60,7 +60,14 @@ const startExport = ()=>{
     }
   })
 
-  ipcRenderer.send("export-to-pr", targetPath.value, props.videoPath, cutSrtPath, clipPoints, selectedVersion.value)
+  ipcRenderer.send(
+    "export-to-pr", 
+    Buffer.from(targetPath.value).toString("base64"), 
+    Buffer.from(props.videoPath).toString("base64"), 
+    Buffer.from(cutSrtPath).toString("base64"), 
+    clipPoints, 
+    selectedVersion.value,
+  )
   alert("任务已发送到 Pr ，请切换至 Pr 查看")
 }
 </script>

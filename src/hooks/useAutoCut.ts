@@ -7,7 +7,7 @@ export function useAutoCut(){
   
   const checkAutocut = ()=>{
     console.log(excutePath.value)
-    ipcRenderer.send("check-autocut", excutePath.value)
+    ipcRenderer.send("check-autocut", Buffer.from(excutePath.value).toString("base64"))
   }
 
   ipcRenderer.on("report-autocut-status",(e,...args)=>{

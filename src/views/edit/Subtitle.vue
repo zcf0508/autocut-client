@@ -134,7 +134,11 @@ const save = ()=>{
     "utf-8",
   )
 
-  ipcRenderer.send("start-cut", props.filePath, cutSrtPath)
+  ipcRenderer.send(
+    "start-cut", 
+    Buffer.from(props.filePath).toString("base64"), 
+    Buffer.from(cutSrtPath).toString("base64"),
+  )
   exporting.value = true
 }
 

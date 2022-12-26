@@ -6,7 +6,6 @@ type GenerateStatus = "processing" | "error" | "success"
 
 /**
  * 生成字幕文件
- * TODO: 中文路径有问题 暂时不支持中文
  */
 export function generateSubtitle(
   excutePath: string, 
