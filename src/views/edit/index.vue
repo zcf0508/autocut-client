@@ -178,7 +178,12 @@ onUnmounted(()=>{
     
   </div>
   <div v-else-if="srtFilePath" class="h-full">
-    <subtitle :file-path="videoPath" :srt-file-path="srtFilePath" :audio-file-path="audioPath"></subtitle>
+    <subtitle 
+      :file-path="filePath" 
+      :video-path="videoPath" 
+      :srt-file-path="srtFilePath" 
+      :audio-file-path="audioPath"
+    ></subtitle>
   </div>
 </template>
 

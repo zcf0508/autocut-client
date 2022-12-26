@@ -14,6 +14,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  videoPath: {
+    type: String,
+    required: true,
+  },
   audioFilePath: {
     type: String,
     // required: true,
@@ -127,7 +131,7 @@ const editedlist = computed(()=>{
 
 const save = ()=>{
 
-  const cutSrtPath = props.filePath.slice(0, props.filePath.lastIndexOf("."))+ "_cut.srt"
+  const cutSrtPath = props.videoPath.slice(0, props.videoPath.lastIndexOf("."))+ "_cut.srt"
   fs.writeFileSync(
     cutSrtPath, 
     stringifySync(editedlist.value, { format: "SRT" }), 
@@ -136,7 +140,7 @@ const save = ()=>{
 
   ipcRenderer.send(
     "start-cut", 
-    Buffer.from(props.filePath).toString("base64"), 
+    Buffer.from(props.videoPath).toString("base64"), 
     Buffer.from(cutSrtPath).toString("base64"),
   )
   exporting.value = true
@@ -195,7 +199,7 @@ const edit = (index:number, val:string) => {
             导出视频
           </button>
           <export-to-pr
-            :video-path="props.filePath"
+            :file-path="props.filePath"
             :edited-srt="editedlist"
             @open="showVideo = false" 
             @close="showVideo = true"
@@ -208,7 +212,7 @@ const edit = (index:number, val:string) => {
           v-show="showVideo" 
           controls
           class="w-full" 
-          :src="filePath"
+          :src="props.videoPath"
         ></video>
         <div class="mt-2">
           <audio ref="audioPlayer" :src="audioFilePath" controls class="hidden" muted/>

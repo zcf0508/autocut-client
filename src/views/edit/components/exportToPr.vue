@@ -30,7 +30,7 @@ const selectDirectory = () => {
 const debounceSelectDirectory = debounce(selectDirectory, 500)
 
 const props = defineProps({
-  videoPath: {
+  filePath: {
     type: String,
     required: true,
   },
@@ -63,7 +63,7 @@ const startExport = ()=>{
   ipcRenderer.send(
     "export-to-pr", 
     Buffer.from(targetPath.value).toString("base64"), 
-    Buffer.from(props.videoPath).toString("base64"), 
+    Buffer.from(props.filePath).toString("base64"), 
     Buffer.from(cutSrtPath).toString("base64"), 
     clipPoints, 
     selectedVersion.value,
