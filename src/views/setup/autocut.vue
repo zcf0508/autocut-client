@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ipcRenderer } from "electron"
+import { downloadAutoCut, selectAutocutSaveDirectory } from "@/interface/autocut";
 import { debounce } from "lodash-es"
 
 const installPath = ref(configStore.installPath)
@@ -11,8 +11,10 @@ watch(() => installPath.value, (newVal) => {
 })
 
 const selectDirectory = () => {
-  ipcRenderer.invoke("select-autocut-save-directory").then((path) => {
-    installPath.value = path.filePaths[0]
+  selectAutocutSaveDirectory().then((path) => {
+    if (path?.filePaths?.[0]) {
+      installPath.value = path.filePaths[0]
+    }
   })
 }
 const debounceSelectDirectory = debounce(selectDirectory, 500)
@@ -24,39 +26,21 @@ const download = () => {
   if(downloadProcess.value > 0 || autocutStatus.value){
     return
   }
-  ipcRenderer.send("download-autocut", Buffer.from(installPath.value).toString("base64"))
+
+  downloadAutoCut(
+    installPath.value,
+    (task, process) => {
+      downloadStatus.value = task
+      downloadProcess.value = process
+    },
+  ).then(() => {
+    checkAutocut()
+  }).catch(err => {
+    alert(err)
+    downloadProcess.value = -1
+  })
 }
 const debounceDownload = debounce(download, 500)
-
-interface DownloadReport {
-  status: "downloading"| "extracting" | "error" | "success"
-  msg: string
-  process?: number
-}
-
-ipcRenderer.on("report-download",(e,...args) => {
-  const res = args[0] as DownloadReport
-  console.log(res)
-  if(res.status === "downloading") {
-    downloadStatus.value = "下载中"
-    downloadProcess.value = res.process!
-  }
-  
-  if(res.status === "extracting") {
-    downloadStatus.value = "解压中"
-    downloadProcess.value = res.process!
-  }
-
-  if(res.status === "error") {
-    downloadProcess.value = -1
-    alert(res.msg)
-  }
-  if(res.status === "success") {
-    checkAutocut()
-    downloadProcess.value = -1
-  }
-})
-
 </script>
 
 <template>

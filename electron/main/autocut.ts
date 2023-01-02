@@ -33,59 +33,79 @@ export function registerAutoCut(win: BrowserWindow){
     return res
   })
 
-  ipcMain.on("download-autocut", async (e,...args) => {
-    const downloadPath = Buffer.from(args[0] as string, "base64").toString()
+  ipcMain.on("download-autocut", async (e, uuid: string, path: string) => {
+    const downloadPath = Buffer.from(path, "base64").toString()
     downloadAutoCut(downloadPath, (status, msg, process) => {
-      e.reply("report-download", {
-        status,
-        msg,
-        process,
-      })
+      e.reply(
+        "report-download",
+        uuid,
+        {
+          status,
+          msg,
+          process,
+        },
+      )
     })
   })
 
-  ipcMain.on("start-transcribe", async (e,...args) => {
-    const filePath = Buffer.from(args[0] as string, "base64").toString()
+  ipcMain.on("start-transcribe", async (e, uuid: string, path: string) => {
+    const filePath = Buffer.from(path, "base64").toString()
     generateSubtitle(excutePath, filePath, (status, msg, process) => {
-      e.reply("report-transcribe", {
-        status,
-        msg,
-        process,
-      })
+      e.reply(
+        "report-transcribe", 
+        uuid,
+        {
+          status,
+          msg,
+          process,
+        },
+      )
     })
   })
 
-  ipcMain.on("convert-video", async (e,...args) => {
-    const filePath = Buffer.from(args[0] as string, "base64").toString()
+  ipcMain.on("convert-video", async (e, uuid: string, path: string) => {
+    const filePath = Buffer.from(path, "base64").toString()
     convertVideo(filePath, (status, msg, process) => {
-      e.reply("report-convert-video", {
-        status,
-        msg,
-        process,
-      })
+      e.reply(
+        "report-convert-video",
+        uuid,
+        {
+          status,
+          msg,
+          process,
+        },
+      )
     })
   })
 
-  ipcMain.on("convert-audio", async (e,...args) => {
-    const filePath = Buffer.from(args[0] as string, "base64").toString()
+  ipcMain.on("convert-audio", async (e, uuid: string, path: string) => {
+    const filePath = Buffer.from(path, "base64").toString()
     getAudio(filePath, (status, msg, process) => {
-      e.reply("report-convert-audio", {
-        status,
-        msg,
-        process,
-      })
+      e.reply(
+        "report-convert-audio",
+        uuid,
+        {
+          status,
+          msg,
+          process,
+        },
+      )
     })
   })
 
-  ipcMain.on("start-cut", async (e,...args) => {
-    const videoFilePath = Buffer.from(args[0] as string, "base64").toString()
-    const srtFilePath = Buffer.from(args[1] as string, "base64").toString()
+  ipcMain.on("start-cut", async (e, uuid:string, video:string, srt:string) => {
+    const videoFilePath = Buffer.from(video, "base64").toString()
+    const srtFilePath = Buffer.from(srt, "base64").toString()
     cutVideo(excutePath, videoFilePath, srtFilePath, (status, msg, process) => {
-      e.reply("report-cut", {
-        status,
-        msg,
-        process,
-      })
+      e.reply(
+        "report-cut",
+        uuid, 
+        {
+          status,
+          msg,
+          process,
+        },
+      )
     })
   })
 
@@ -111,7 +131,7 @@ export function registerAutoCut(win: BrowserWindow){
     const spec = args[4] as string
 
     exportToPr(targetDir, videoFile, srtFile, clipPoints, spec, (status, msg)=>{
-      console.log(status)
+      e.sender.send("export-to-pr", {status, msg})
     })
   })
 }

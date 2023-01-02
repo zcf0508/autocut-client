@@ -1,20 +1,16 @@
-import { ipcRenderer } from "electron"
+import { checkStatus } from "@/interface/autocut"
 import path from "path"
 
 export function useAutoCut(){
   const excutePath = computed(() => path.join(configStore.installPath, "autocut", "autocut.exe"))
   const autocutStatus = ref(false)
   
-  const checkAutocut = ()=>{
-    console.log(excutePath.value)
-    ipcRenderer.send("check-autocut", Buffer.from(excutePath.value).toString("base64"))
+  const checkAutocut = async ()=>{
+    autocutStatus.value = await checkStatus(excutePath.value)
+    statusStore.setAutocut(autocutStatus.value)
   }
 
-  ipcRenderer.on("report-autocut-status",(e,...args)=>{
-    autocutStatus.value = args[0]
-    statusStore.setAutocut(args[0])
-  })
-  
+
   watch(
     () => excutePath.value,
     () => {

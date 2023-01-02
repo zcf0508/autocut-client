@@ -33,8 +33,8 @@ const openFFmpeg = ()=>{
       leading-6"
     >
       <div>{{ autocutStatus ? '已正确安装 AutoCut' : '请检查 AutoCut 是否已正确安装'}}</div>
-      <div v-if="!autocutStatus">
-        <a href="/#/setup/autocut" @click.prevent.stop="$router.push('/setup/autocut')">点击开始配置</a>
+      <div>
+        <a href="/#/setup/autocut" @click.prevent.stop="$router.push('/setup/autocut')">配置AutoCut</a>
       </div>
     </div>
     <div>

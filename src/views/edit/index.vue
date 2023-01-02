@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ipcRenderer } from "electron"
+import { startTranscribe } from "@/interface/autocut";
+import { convertAudio, convertVideo } from "@/interface/ffmpeg";
 import Subtitle from "./Subtitle.vue"
 
 /**
@@ -38,69 +39,41 @@ const status = computed(() => {
 })
 
 const start = () => {
-  ipcRenderer.send("start-transcribe", Buffer.from(filePath.value).toString("base64"))
+  startTranscribe(
+    filePath.value,
+    (task, process) => {
+      transcribeProcess.value = process
+      tasksStatus.transcribe = "processing"
+    },
+  ).then(res => {
+    srtFilePath.value = res
+    transcribeProcess.value = -1
+    tasksStatus.transcribe = "success"
+  }).catch(err => {
+    alert(err)
+    transcribeProcess.value = -1
+    tasksStatus.transcribe = "error"
+  })
+
   // 后缀名不是 mp4
   if(filePath.value.slice(-4) !== ".mp4") {
-    ipcRenderer.send("convert-video", Buffer.from(filePath.value).toString("base64"))
+    convertVideo(filePath.value).then(res => {
+      videoPath.value = res
+      tasksStatus.convertVideo = "success"
+    }).catch(()=>{
+      tasksStatus.convertVideo = "error"
+    })
   } else {
     videoPath.value = filePath.value
     tasksStatus.convertVideo = "success"
   }
-  ipcRenderer.send("convert-audio", Buffer.from(filePath.value).toString("base64"))
+  convertAudio(filePath.value).then(res => {
+    audioPath.value = res
+    tasksStatus.convertAudio = "success"
+  }).catch(() => {
+    tasksStatus.convertAudio = "error"
+  })
 }
-
-interface TranscribeReport {
-  status: "processing" | "error" | "success"
-  msg: string
-  process?: number
-}
-
-ipcRenderer.on("report-transcribe",(e,...args) => {
-  const res = args[0] as TranscribeReport
-
-  if(res.status === "processing") {
-    transcribeProcess.value = res.process!
-  }
-
-  if(res.status === "error") {
-    transcribeProcess.value = -1
-    alert(res.msg)
-  }
-  if(res.status === "success") {
-    console.log("字幕生成完成")
-    transcribeProcess.value = -1
-    // 替换后缀名为 .srt
-    srtFilePath.value = filePath.value.slice(0,filePath.value.lastIndexOf(".")) + ".srt"
-  }
-
-  tasksStatus.transcribe = res.status
-})
-
-ipcRenderer.on("report-convert-video",(e,...args)=>{
-  const res = args[0] 
-  
-  if(res.status === "success") {
-    console.log("视频转码完成")
-    transcribeProcess.value = -1
-    // 替换后缀名为 .mp4
-    videoPath.value = filePath.value.slice(0,filePath.value.lastIndexOf(".")) + ".mp4"
-  }
-
-  tasksStatus.convertVideo = res.status
-})
-
-ipcRenderer.on("report-convert-audio",(e,...args)=>{
-  const res = args[0] 
-  
-  if(res.status === "success") {
-    console.log("音频转码完成")
-    transcribeProcess.value = -1
-    // 替换后缀名为 .wav
-    audioPath.value = filePath.value.slice(0,filePath.value.lastIndexOf(".")) + ".wav"
-  }
-
-  tasksStatus.convertAudio = res.status
-})
 
 const dragRef = ref<HTMLElement | null>(null)
 

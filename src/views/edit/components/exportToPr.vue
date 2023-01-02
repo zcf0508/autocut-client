@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ipcRenderer } from "electron"
 import { debounce } from "lodash-es"
 import * as fs from "fs"
 import path from "path"
 import { stringifySync } from "subtitle"
+import { exportToPr, selectPrprojSaveDirectory } from "@/interface/adobe"
 
 const showDialog = ref(false)
 const { prVersions, checkPrVersions } = usePrVersions()
@@ -23,8 +23,10 @@ const closeDialog = ()=>{
 
 const targetPath = ref("")
 const selectDirectory = () => {
-  ipcRenderer.invoke("select-prproj-save-directory").then((path) => {
-    targetPath.value = path.filePaths[0]
+  selectPrprojSaveDirectory().then((path) => {
+    if (path?.filePaths?.[0]) {
+      targetPath.value = path.filePaths[0]
+    }
   })
 }
 const debounceSelectDirectory = debounce(selectDirectory, 500)
@@ -51,7 +53,7 @@ const startExport = ()=>{
     stringifySync(props.editedSrt, { format: "SRT" }), 
     "utf-8",
   )
-  const clipPoints = [] as any[]
+  const clipPoints = [] as Array<string>
   
   props.editedSrt.forEach((item, index) => {
     if(index < props.editedSrt.length - 1 && props.editedSrt[index+1]?.data.start - item.data.end > 1000) {
@@ -60,15 +62,17 @@ const startExport = ()=>{
     }
   })
 
-  ipcRenderer.send(
-    "export-to-pr", 
-    Buffer.from(targetPath.value).toString("base64"), 
-    Buffer.from(props.filePath).toString("base64"), 
-    Buffer.from(cutSrtPath).toString("base64"), 
+  exportToPr(
+    targetPath.value,
+    props.filePath,
+    cutSrtPath,
     clipPoints, 
     selectedVersion.value,
-  )
-  alert("任务已发送到 Pr ，请切换至 Pr 查看")
+  ).then(()=>{
+    alert("任务已发送到 Pr ，请切换至 Pr 查看")
+  }).catch(err => {
+    alert(err)
+  })
 }
 </script>
 

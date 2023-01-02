@@ -7,7 +7,7 @@ import ExportToPr from "./components/exportToPr.vue";
 import { throttle, cloneDeep } from "lodash-es"
 // @ts-ignore
 import { useAVWaveform } from "vue-audio-visual"
-import { ipcRenderer } from "electron";
+import { startCut } from "@/interface/autocut";
 
 const props = defineProps({
   filePath: {
@@ -138,28 +138,15 @@ const save = ()=>{
     "utf-8",
   )
 
-  ipcRenderer.send(
-    "start-cut", 
-    Buffer.from(props.videoPath).toString("base64"), 
-    Buffer.from(cutSrtPath).toString("base64"),
-  )
+  startCut(props.videoPath, cutSrtPath).then(msg => {
+    alert(`导出成功 ${msg}`)
+    exporting.value = false
+  }).catch(err => {
+    alert(`导出失败 ${err}`)
+    exporting.value = false
+  })
   exporting.value = true
 }
-
-ipcRenderer.on("report-cut",(e,...args) => {
-  const res = args[0]
-
-  if(res.status === "error") {
-    alert(res.msg)
-    exporting.value = false
-  }
-  if(res.status === "success") {
-    console.log("字幕生成完成")
-    alert(res.msg)
-    exporting.value = false
-  }
-
-})
 
 const showVideo = ref(true)
 

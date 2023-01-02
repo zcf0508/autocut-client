@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@iconify/json': ^2.1.136
   '@types/lodash-es': ^4.17.6
+  '@types/uuid': ^9.0.0
   '@typescript-eslint/eslint-plugin': ^5.42.1
   '@typescript-eslint/parser': ^5.42.1
   '@unocss/preset-icons': ^0.46.5
@@ -24,6 +25,7 @@ specifiers:
   unocss: ^0.46.5
   unplugin-auto-import: ^0.11.4
   unplugin-vue-components: ^0.22.9
+  uuid: ^9.0.0
   vite: ^3.2.2
   vite-electron-plugin: ^0.5.1
   vite-plugin-electron-renderer: ^0.11.1
@@ -43,6 +45,7 @@ dependencies:
 devDependencies:
   '@iconify/json': 2.1.136
   '@types/lodash-es': 4.17.6
+  '@types/uuid': 9.0.0
   '@typescript-eslint/eslint-plugin': 5.42.1_a76fwnskzo2n3ynumjbqxmyj7i
   '@typescript-eslint/parser': 5.42.1_e3uo4sehh4zr4i6m57mkkxxv7y
   '@unocss/preset-icons': 0.46.5
@@ -60,6 +63,7 @@ devDependencies:
   unocss: 0.46.5_vite@3.2.3
   unplugin-auto-import: 0.11.4_@vueuse+core@9.5.0
   unplugin-vue-components: 0.22.9_vue@3.2.45
+  uuid: 9.0.0
   vite: 3.2.3
   vite-electron-plugin: 0.5.1
   vite-plugin-electron-renderer: 0.11.1
@@ -454,6 +458,10 @@ packages:
 
   /@types/semver/7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
+    dev: true
+
+  /@types/uuid/9.0.0:
+    resolution: {integrity: sha512-kr90f+ERiQtKWMz5rP32ltJ/BtULDI5RVO0uavn1HQUOwjx0R1h0rnDYNL0CepF1zL5bSY6FISAfd9tOdDhU5Q==}
     dev: true
 
   /@types/verror/1.10.6:
@@ -4131,6 +4139,11 @@ packages:
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+    dev: true
+
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
     dev: true
 
   /verror/1.10.1:
