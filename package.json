@@ -25,7 +25,7 @@
     "@unocss/preset-icons": "^0.46.5",
     "@vitejs/plugin-vue": "^3.1.2",
     "@vueuse/core": "^9.5.0",
-    "electron": "^21.1.0",
+    "electron": "^22.0.0",
     "electron-builder": "^23.3.3",
     "eslint": "^8.27.0",
     "eslint-plugin-import": "^2.26.0",
