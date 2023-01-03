@@ -2,7 +2,20 @@
 
 该项目为 [AutoCut](https://github.com/mli/autocut) 提供一个开箱即用的客户端。
 
+该项目可以快速识别视频字幕，并通过选择字幕片段的方式来对视频进行剪辑。编辑结果可直接保存为视频，同时该项目支持直接将编辑结果导出到 Adobe Premiere Pro 中，方便进行二次创作。
+
 查看 [原型图](https://js.design/f/T0LLLh?p=g8rtx09zle)
+
+# 截图
+
+![Home](./images/1.png)
+![Start](./images/2.png)
+![Edit](./images/3.png)
+![ExportToPR](./images/4.png)
+
+# 下载
+
+查看最新[下载地址](https://github.com/zcf0508/autocut-client/releases)。
 
 # RoadMap
 
