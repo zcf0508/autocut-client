@@ -5,6 +5,8 @@ import path from "path"
 import { stringifySync } from "subtitle"
 import { exportToPr, selectPrprojSaveDirectory } from "@/interface/adobe"
 
+const { t } = useI18n()
+
 const showDialog = ref(false)
 const { prVersions, checkPrVersions } = usePrVersions()
 checkPrVersions()
@@ -69,7 +71,7 @@ const startExport = ()=>{
     clipPoints, 
     selectedVersion.value,
   ).then(()=>{
-    alert("任务已发送到 Pr ，请切换至 Pr 查看")
+    alert(t("exportToPr.success"))
   }).catch(err => {
     alert(err)
   })
@@ -84,7 +86,7 @@ const startExport = ()=>{
       cursor-pointer"
     @click="openDialog"
   >
-    导出到 Pr 工程
+    {{ t("exportToPr.btn") }}
   </button>
   <div 
     v-if="showDialog" 
@@ -93,9 +95,13 @@ const startExport = ()=>{
   >
     <div class="h-full w-full flex justify-center items-center">
       <div class="w-1/2 h-1/2 bg-white rounded-[4px] p-6" @click.prevent.stop>
-        <p class="text-gray-400">请先打开 Pr 再使用导出功能</p>
+        <p class="text-gray-400">
+          {{ t("exportToPr.desc") }}
+        </p>
         <div class="flex items-center my-2">
-          <span class="pr-2">请选择当前 Pr 版本</span>
+          <span class="pr-2">
+            {{ t("exportToPr.selectVersion") }}
+          </span>
           <select v-model="selectedVersion" class="h-[39px] border border-[#F0F0F0] bg-white rounded-[4px] px-2">
             <option 
               v-for="version in prVersions" 
@@ -107,18 +113,20 @@ const startExport = ()=>{
           </select>
         </div>
         <div class="flex items-center my-2">
-          <span class="pr-2">请选择保存位置</span>
+          <span class="pr-2">
+            {{ t("exportToPr.selectDirectory") }}
+          </span>
           <div @click="debounceSelectDirectory">
             <input 
               v-model="targetPath"
-              placeholder="请选择文件夹"
+              :placeholder="t('exportToPr.selectDirectory')"
               class="h-[39px] border border-[#F0F0F0] bg-white rounded-[4px] px-2"
               disabled
             />
             <button 
               class="h-[40px] bg-[#F0F0F0] ml-4 rounded-[4px] border-none cursor-pointer whitespace-nowrap px-2"
             >
-              选择文件夹
+              {{ t('exportToPr.selectBtn') }}
             </button>
           </div>
         </div>
@@ -130,7 +138,7 @@ const startExport = ()=>{
               cursor-pointer"
             @click="startExport"
           >
-            开始导出
+            {{ t("exportToPr.startExport") }}
           </button>
         </div>
       </div>

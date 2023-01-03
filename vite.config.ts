@@ -11,6 +11,7 @@ import pkg from "./package.json"
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import UnoCSS from "unocss/vite";
+import vueI18n from "@intlify/vite-plugin-vue-i18n"
 
 rmSync("dist-electron", { recursive: true, force: true })
 
@@ -27,6 +28,9 @@ export default defineConfig({
   },
   plugins: [
     vue(),
+    vueI18n({
+      include: path.resolve(__dirname, "./src/i18n/**"),
+    }),
     AutoImport({
       /* options */
       include: [
@@ -34,7 +38,7 @@ export default defineConfig({
         /\.vue$/,
         /\.vue\?vue/, // .vue
       ],
-      imports: ["vue", "vue-router", "@vueuse/core", "vitest"],
+      imports: ["vue", "vue-router", "@vueuse/core", "vitest", "vue-i18n"],
       dirs: ["src/hooks", "src/store", "src/utils", "src/api"],
       dts: true,
     }),

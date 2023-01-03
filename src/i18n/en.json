@@ -1,0 +1,42 @@
+{
+  "statusBar": "Status",
+  "ffmepegInstalled": {
+    "success": "FFmpeg is correctly installed.",
+    "error": "Please check if FFmpeg is installed correctly",
+    "tip": "Please click to download FFmpeg and install it"
+  },
+  "autocutInstalled": {
+    "success": "AucoCut is correctly installed.",
+    "error": "Please check if AutoCut is installed correctly",
+    "tip": "AutoCut Configure",
+    "installPathPlaceholder": "Please select an installation folder",
+    "step1": "1. Select an installation folder",
+    "selectBtn": "Select",
+    "downloadBtn": "Download",
+    "step2": "2. Install AutoCut",
+    "downloading": "Downloading now, please do not do anything else.",
+    "extracting": "Unzipping now, please do not do anything else."
+  },
+  "start": "Start",
+  "back": "Back",
+  "dropIn": "Drag in a file to start editing.",
+  "selectedFile": "Selected File",
+  "transcribeTask": "Transcribe: ",
+  "success": "success",
+  "fail": "fail",
+  "convertVideoTask": "Convert Video: ",
+  "convertAudioTask": "Convert Audio: ",
+  "exportSuccess": "Export Success",
+  "exportFail": "Export Fail",
+  "export": "Export",
+  "exporting": "Exporting, please be patient...",
+  "exportToPr": {
+    "success": "The task has been sent to Premiere. Please switch to Premiere to check it.",
+    "btn": "Export to PR project",
+    "desc": "Please open Adobe Premiere Pro before exporting.",
+    "selectVersion": "Please select Adobe Premiere Pro version",
+    "selectDirectory": "Please select the save folder",
+    "selectBtn": "Select",
+    "startExport": "Start"
+  }
+}

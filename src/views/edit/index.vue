@@ -3,6 +3,8 @@ import { startTranscribe } from "@/interface/autocut";
 import { convertAudio, convertVideo } from "@/interface/ffmpeg";
 import Subtitle from "./Subtitle.vue"
 
+const { t } = useI18n()
+
 /**
  * 原始视频文件地址
  */
@@ -124,27 +126,27 @@ onUnmounted(()=>{
         leading-6"
     >
       <template v-if="!filePath">
-        拖入文件开始剪辑
+        {{ t("dropIn") }}
       </template>
       <template v-else>
-        <div>已选文件： {{ filePath }}</div>
+        <div>{{ t("selectedFile") }} {{ filePath }}</div>
         <div v-if="tasksStatus.transcribe">
-          <span>字幕生成: </span>
+          <span>{{ t("transcribeTask") }} </span>
           <span v-if="tasksStatus.transcribe === 'processing' && transcribeProcess >= 0">
             {{ transcribeProcess }}%
           </span>
-          <span v-if="tasksStatus.transcribe === 'success'"> 成功 </span>
-          <span v-if="tasksStatus.transcribe === 'error'"> 失败 </span>
+          <span v-if="tasksStatus.transcribe === 'success'"> {{ t('success') }} </span>
+          <span v-if="tasksStatus.transcribe === 'error'"> {{ t('fail') }} </span>
         </div>
         <div v-if="tasksStatus.convertVideo">
-          <span>视频转码: </span>
-          <span v-if="tasksStatus.convertVideo === 'success'"> 成功 </span>
-          <span v-if="tasksStatus.convertVideo === 'error'"> 失败 </span>
+          <span>{{ t("convertVideoTask") }} </span>
+          <span v-if="tasksStatus.convertVideo === 'success'"> {{ t('success') }} </span>
+          <span v-if="tasksStatus.convertVideo === 'error'"> {{ t('fail') }} </span>
         </div>
         <div v-if="tasksStatus.convertAudio">
-          <span>音频转码: </span>
-          <span v-if="tasksStatus.convertAudio === 'success'"> 成功 </span>
-          <span v-if="tasksStatus.convertAudio === 'error'"> 失败 </span>
+          <span>{{ t("convertAudioTask") }} </span>
+          <span v-if="tasksStatus.convertAudio === 'success'"> {{ t('success') }} </span>
+          <span v-if="tasksStatus.convertAudio === 'error'"> {{ t('fail') }} </span>
         </div>
       </template>
     </div>

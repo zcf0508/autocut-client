@@ -9,6 +9,8 @@ import { throttle, cloneDeep } from "lodash-es"
 import { useAVWaveform } from "vue-audio-visual"
 import { startCut } from "@/interface/autocut";
 
+const { t } = useI18n()
+
 const props = defineProps({
   filePath: {
     type: String,
@@ -139,10 +141,10 @@ const save = ()=>{
   )
 
   startCut(props.videoPath, cutSrtPath).then(msg => {
-    alert(`导出成功 ${msg}`)
+    alert(`${t("exportSuccess")} ${msg}`)
     exporting.value = false
   }).catch(err => {
-    alert(`导出失败 ${err}`)
+    alert(`${t("exportFail")} ${err}`)
     exporting.value = false
   })
   exporting.value = true
@@ -160,7 +162,7 @@ const edit = (index:number, val:string) => {
     <div class="w-[94%] mx-auto my-2">
       <div class="p-2 flex items-center cursor-pointer" @click="$router.push('/status')">
         <div class="i-material-symbols:chevron-left"></div>
-        返回
+        {{ t("back") }}
       </div>
     </div>
     <div class="flex justify-between w-[94%] mx-auto h-[calc(100%-37px-16px)]">
@@ -183,7 +185,7 @@ const edit = (index:number, val:string) => {
               cursor-pointer"
             @click="save"
           >
-            导出视频
+            {{ t("export") }}
           </button>
           <export-to-pr
             :file-path="props.filePath"
@@ -214,7 +216,7 @@ const edit = (index:number, val:string) => {
       flex justify-center items-center "
       @click.stop
     >
-      导出中，请耐心等待...
+      {{ t("exporting") }}
     </div>
   </div>
 </template>

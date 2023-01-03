@@ -1,0 +1,45 @@
+{
+  "statusBar": "状态",
+  "ffmepegInstalled": {
+    "success": "已正确安装 FFmpeg",
+    "error": "请检查 FFmpeg 是否已正确安装",
+    "tip": "请点击下载 FFmpeg 并安装"
+  },
+  "autocutInstalled": {
+    "success": "已正确安装 AutoCut",
+    "error": "请检查 AutoCut 是否已正确安装",
+    "tip": "配置AutoCut",
+    "installPathPlaceholder": "请选择安装路径",
+    "step1": "1. 选择安装路径",
+    "selectBtn": "选择文件夹",
+    "downloadBtn": "点击下载",
+    "step2": "2. 安装 AutoCut",
+    "downloading": "正在下载中，请勿进行其它操作",
+    "extracting": "正在解压中，请勿进行其它操作"
+  },
+  "start": "开始使用",
+  "back": "返回",
+  "setup": {
+    "title": "配置 AutoCut"
+  },
+  "dropIn": "拖入文件开始剪辑",
+  "selectedFile": "已选文件：",
+  "transcribeTask": "字幕生成: ",
+  "success": "成功",
+  "fail": "失败",
+  "convertVideoTask": "视频转码: ",
+  "convertAudioTask": "音频转码: ",
+  "exportSuccess": "导出成功",
+  "exportFail": "导出失败",
+  "export": "导出视频",
+  "exporting": "导出中，请耐心等待...",
+  "exportToPr": {
+    "success": "任务已发送到 Pr ，请切换至 Pr 查看",
+    "btn": "导出到 Pr 工程",
+    "desc": "请先打开 Pr 再使用导出功能",
+    "selectVersion": "请选择当前 Pr 版本",
+    "selectDirectory": "请选择保存位置",
+    "selectBtn": "选择文件夹",
+    "startExport": "开始导出"
+  }
+}

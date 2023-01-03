@@ -62,10 +62,10 @@ export function downloadAutoCut(installPath: string, processCallback: (task: str
       }
       else {
         if(res.status === "downloading") {
-          processCallback("下载中", res.process!/taskCount)
+          processCallback("downloading", res.process!/taskCount)
         }
         else if(res.status === "extracting") {
-          processCallback("解压中", 1/taskCount + res.process!/taskCount)
+          processCallback("extracting", 1/taskCount + res.process!/taskCount)
         }
       }
     })

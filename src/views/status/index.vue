@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {shell} from "electron"
 
+const { t } = useI18n()
 
 const ffmpegStatus = computed(() => statusStore.ffmpegStatus)
 const autocutStatus = computed(() => statusStore.autocutStatus)
@@ -21,9 +22,9 @@ const openFFmpeg = ()=>{
       leading-6"
     >
       <img class="block w-[80px] h-[80px]" src="@/assets/FFmpeg.png">
-      <div>{{ ffmpegStatus ? '已正确安装 FFmpeg' : '请检查 ffmpeg 是否已正确安装'}}</div>
+      <div>{{ ffmpegStatus ? t("ffmepegInstalled.success") : t("ffmepegInstalled.error")}}</div>
       <div v-if="!ffmpegStatus">
-        请 <a :href="ffmpegUrl" @click.prevent="openFFmpeg">点击下载 ffmpeg</a> 并安装
+        <a :href="ffmpegUrl" @click.prevent="openFFmpeg">{{ t("ffmepegInstalled.tip") }}</a> 
       </div>
     </div>
     <div class="w-[90%] h-[240px] my-2
@@ -32,9 +33,11 @@ const openFFmpeg = ()=>{
       bg-white
       leading-6"
     >
-      <div>{{ autocutStatus ? '已正确安装 AutoCut' : '请检查 AutoCut 是否已正确安装'}}</div>
+      <div>{{ autocutStatus ? t("autocutInstalled.success") : t("autocutInstalled.error")}}</div>
       <div>
-        <a href="/#/setup/autocut" @click.prevent.stop="$router.push('/setup/autocut')">配置AutoCut</a>
+        <a href="/#/setup/autocut" @click.prevent.stop="$router.push('/setup/autocut')">
+          {{ t("autocutInstalled.tip") }}
+        </a>
       </div>
     </div>
     <div>
@@ -46,7 +49,7 @@ const openFFmpeg = ()=>{
         :disabled="!ffmpegStatus || !autocutStatus"
         @click="$router.push('/edit')"
       >
-        开始使用
+        {{ t("start") }}
       </button>
     </div>
   </div>
