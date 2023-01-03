@@ -42,7 +42,7 @@
     "vite": "^3.2.2",
     "vite-electron-plugin": "^0.5.1",
     "vite-plugin-electron-renderer": "^0.11.1",
-    "vitest": "^0.25.3",
+    "vitest": "^0.26.3",
     "vue": "^3.2.40",
     "vue-audio-visual": "^3.0.1",
     "vue-i18n": "9",
