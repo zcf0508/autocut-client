@@ -1,5 +1,8 @@
 <script setup lang="ts">
-
+const { locale } = useI18n()
+if (configStore.locale) {
+  locale.value = configStore.locale
+}
 </script>
 
 <template>
