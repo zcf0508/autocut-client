@@ -17,7 +17,7 @@ The project can quickly generate video subtitles and edit the video by selecting
 
 # Download
 
-[Check newest releases](https://github.com/zcf0508/autocut-client/releases).
+[Get newest release](https://github.com/zcf0508/autocut-client/releases).
 
 # RoadMap
 
