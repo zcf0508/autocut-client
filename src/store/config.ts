@@ -1,6 +1,6 @@
 import { hamiVuex } from "@/store";
 
-const CONFIG_NAME = "ct-config"
+export const CONFIG_NAME = "ct-config"
 
 const localConfig = localStorage.getItem(CONFIG_NAME)
 
@@ -24,13 +24,11 @@ export const configStore = hamiVuex.store({
   setLocale(locale: string) {
     this.$patch((state) => {
       state.locale = locale;
-      localStorage.setItem(CONFIG_NAME, JSON.stringify(state))
     })
   },
   async setInstallPath(path: string) {
     this.$patch((state) => {
       state.installPath = path
-      localStorage.setItem(CONFIG_NAME, JSON.stringify(state))
     })
   },
 })
