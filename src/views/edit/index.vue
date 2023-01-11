@@ -41,22 +41,6 @@ const status = computed(() => {
 })
 
 const start = () => {
-  startTranscribe(
-    filePath.value,
-    (task, process) => {
-      transcribeProcess.value = process
-      tasksStatus.transcribe = "processing"
-    },
-  ).then(res => {
-    srtFilePath.value = res
-    transcribeProcess.value = -1
-    tasksStatus.transcribe = "success"
-  }).catch(err => {
-    alert(err)
-    transcribeProcess.value = -1
-    tasksStatus.transcribe = "error"
-  })
-
   // 后缀名不是 mp4
   if(filePath.value.slice(-4) !== ".mp4") {
     convertVideo(filePath.value).then(res => {
@@ -72,6 +56,23 @@ const start = () => {
   convertAudio(filePath.value).then(res => {
     audioPath.value = res
     tasksStatus.convertAudio = "success"
+
+    startTranscribe(
+      audioPath.value,
+      (task, process) => {
+        transcribeProcess.value = process
+        tasksStatus.transcribe = "processing"
+      },
+    ).then(res => {
+      srtFilePath.value = res
+      transcribeProcess.value = -1
+      tasksStatus.transcribe = "success"
+    }).catch(err => {
+      alert(err)
+      transcribeProcess.value = -1
+      tasksStatus.transcribe = "error"
+    })
+
   }).catch(() => {
     tasksStatus.convertAudio = "error"
   })

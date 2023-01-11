@@ -48,7 +48,15 @@ export function generateSubtitle(
         0,
       )
     }
-    if (line.match(/[0-9]*%/)?.length > 0) {
+    if (line.match(/[0-9]*%/)?.length > 0 && line.match(/B\/s/)?.length > 0) {
+      const process = parseInt(line.match(/[0-9]*%/)[0])
+      cb(
+        "processing",
+        "downloading",
+        process,
+      )
+    }
+    else if (line.match(/[0-9]*%/)?.length > 0) {
       const process = parseInt(line.match(/[0-9]*%/)[0])
       cb(
         "processing",

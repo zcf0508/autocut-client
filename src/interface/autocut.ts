@@ -65,7 +65,7 @@ export function downloadAutoCut(installPath: string, processCallback: (task: str
           processCallback("downloading", res.process!/taskCount)
         }
         else if(res.status === "extracting") {
-          processCallback("extracting", 1/taskCount + res.process!/taskCount)
+          processCallback("extracting", 100/taskCount + res.process!/taskCount)
         }
       }
     })
@@ -100,6 +100,8 @@ export function startTranscribe(filePath: string, processCallback: (task: string
   return new Promise<string>((resolve, reject) => {
     const uuid = uuidv4()
 
+    let taskCount = 1 // 默认为转录
+
     ipcRenderer.on("report-transcribe", (e, _uuid: string, res: TranscribeReport) => {
       if (_uuid !== uuid) {
         return
@@ -111,7 +113,19 @@ export function startTranscribe(filePath: string, processCallback: (task: string
         transcribeTasks.delete(uuid)
         resolve(filePath.slice(0, filePath.lastIndexOf(".")) + ".srt")
       } else if (res.status === "processing") {
-        processCallback("转录中", res.process!)
+        if (res.msg === "transcribing") {
+          processCallback(
+            "processing", 
+            taskCount === 1 
+              ? res.process! // 仅转录
+              : 100/taskCount + res.process!/taskCount, // 下载和转录
+          )
+        } else if (res.msg === "downloading") {
+          if (taskCount === 1) {
+            taskCount++ // 增加一个下载任务
+          }
+          processCallback("processing", res.process!/taskCount)
+        }
       }
 
     })
