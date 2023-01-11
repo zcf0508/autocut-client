@@ -16,7 +16,7 @@ export function generateSubtitle(
   // let commad = `${excutePath} -t ${filePath}`
   const p = spawn(
     savePath(excutePath), 
-    ["-t", savePath(filePath), "--device", "cpu"],
+    ["-t", savePath(filePath), "--device", "cpu", "--whisper-model", "tiny"],
   )
 
   const stdoutLineReader = readline.createInterface({
