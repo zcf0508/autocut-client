@@ -1,9 +1,9 @@
 import {  BrowserWindow, ipcMain, dialog } from "electron"
-import { exportToPr, getSpec } from "../adobe"
-import { cutVideo, generateSubtitle } from "../autocut"
-import { autocutCheck, ffmpegCheck } from "../autocut/check"
-import { downloadAutoCut } from "../autocut/download"
-import { convertVideo, getAudio } from "../ffmpeg"
+import { exportToPr, getSpec } from "~~/adobe"
+import { cutVideo, generateSubtitle } from "~~/autocut"
+import { autocutCheck, ffmpegCheck } from "~~/autocut/check"
+import { downloadAutoCut } from "~~/autocut/download"
+import { convertVideo, getAudio } from "~~/ffmpeg"
 let excutePath = ""
 
 export function registerAutoCut(win: BrowserWindow){

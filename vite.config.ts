@@ -22,14 +22,14 @@ export default defineConfig({
   },
   test: {
     alias: [
-      {find: "@", replacement: path.resolve(__dirname, "./src/")},
-      {find: "~~", replacement: path.resolve(__dirname, "./electron/")},
+      {find: "@", replacement: path.resolve(__dirname, "./src/renderer/")},
+      {find: "~~", replacement: path.resolve(__dirname, "./src/main/")},
     ],
   },
   plugins: [
     vue(),
     vueI18n({
-      include: path.resolve(__dirname, "./src/i18n/**"),
+      include: path.resolve(__dirname, "./src/renderer/i18n/**"),
     }),
     AutoImport({
       /* options */
@@ -39,12 +39,12 @@ export default defineConfig({
         /\.vue\?vue/, // .vue
       ],
       imports: ["vue", "vue-router", "@vueuse/core", "vitest", "vue-i18n"],
-      dirs: ["src/hooks", "src/store", "src/utils", "src/api"],
+      dirs: ["src/renderer/hooks", "src/renderer/store", "src/renderer/utils", "src/renderer/api"],
       dts: true,
     }),
     Components({
       /* options */
-      dirs: ["src/components"],
+      dirs: ["src/renderer/components"],
       extensions: ["vue"],
       deep: true,
       dts: true,
@@ -52,7 +52,7 @@ export default defineConfig({
     }),
     UnoCSS(),
     electron({
-      include: ["electron"],
+      include: ["src/main"],
       transformOptions: {
         sourcemap: !!process.env.VSCODE_DEBUG,
       },
@@ -66,7 +66,7 @@ export default defineConfig({
         // Allow use `import.meta.env.VITE_SOME_KEY` in Electron-Main
         loadViteEnv(),
         alias([
-          {find: "~~", replacement: path.resolve(__dirname, "./electron/")},
+          {find: "~~", replacement: path.resolve(__dirname, "./src/main")},
         ]),
       ],
     }),
@@ -96,7 +96,8 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-      {find: "@", replacement: path.resolve(__dirname, "./src/")},
+      {find: "vue-i18n", replacement: "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js"},
+      {find: "@", replacement: path.resolve(__dirname, "./src/renderer/")},
     ],
   },
 })

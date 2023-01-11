@@ -3,15 +3,15 @@
     "target": "ESNext",
     "composite": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "jsx": "preserve",
     "resolveJsonModule": true,
     "paths": {
       "~~/*": [
-        "./electron/*"
+        "./src/main/*"
       ]
     },
     "allowSyntheticDefaultImports": true
   },
-  "include": ["package.json", "electron", "test", "auto-imports.d.ts"]
+  "include": ["package.json", "src/main", "test", "auto-imports.d.ts"]
 }

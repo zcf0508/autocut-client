@@ -16,7 +16,7 @@
       "source.fixAll.eslint": true
   },
   "i18n-ally.localesPaths": [
-    "src/i18n"
+    "src/renderer/i18n"
   ],
   "i18n-ally.keystyle": "nested"
 }

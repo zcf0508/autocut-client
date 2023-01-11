@@ -2,15 +2,18 @@
 //
 // ├─┬ dist-electron
 // │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
+// │ │ ├─┬ main
+// │ │ │ └── index.js    > Electron-Main
+// │ │ └─┬ preload
+// │ │   └── index.js    > Preload-Scripts
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 //
-process.env.DIST_ELECTRON = join(__dirname, "..")
+
+process.env.DIST_ELECTRON = join(__dirname, "..", "..")
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist")
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, "../public")
+
 
 import { app, BrowserWindow, shell, ipcMain } from "electron"
 import { release } from "os"
@@ -74,6 +77,8 @@ async function createWindow() {
     if (url.startsWith("https:")) shell.openExternal(url)
     return { action: "deny" }
   })
+
+  registerAutoCut(win)
 }
 
 app.whenReady().then(createWindow)
@@ -117,5 +122,3 @@ ipcMain.handle("open-win", (event, arg) => {
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
   }
 })
-
-registerAutoCut(win)

@@ -43,15 +43,15 @@ export function GetCoreLib() {
     const platform = process.platform;
     let core = undefined;
     if (platform === "darwin") {
-      core = require("../../adobe-lib/esdebugger-core/mac/esdcorelibinterface.node");
+      core = require("../../../adobe-lib/esdebugger-core/mac/esdcorelibinterface.node");
     }
     else if (platform === "win32") {
       const arch = process.arch;
       if (arch === "x64" || arch === "arm64") {
-        core = require("../../adobe-lib/esdebugger-core/win/x64/esdcorelibinterface.node");
+        core = require("../../../adobe-lib/esdebugger-core/win/x64/esdcorelibinterface.node");
       }
       else {
-        core = require("../../adobe-lib/esdebugger-core/win/win32/esdcorelibinterface.node");
+        core = require("../../../adobe-lib/esdebugger-core/win/win32/esdcorelibinterface.node");
       }
     }
     if (core === undefined) {
@@ -66,12 +66,17 @@ export function GetCoreLib() {
 // 初始化 core
 export function initCore(){
   return new Promise<CoreLib>((resolve, reject) => {
-    const core = GetCoreLib();
-    const result = core.esdInitialize("vscesd", process.pid);
-    console.log("init result " + JSON.stringify(result))
-    if (result.status === 0 || result.status === 11) {
-      resolve(core)
-    } else {
+    try {
+      const core = GetCoreLib();
+      const result = core.esdInitialize("vscesd", process.pid);
+      console.log("init result " + JSON.stringify(result))
+      if (result.status === 0 || result.status === 11) {
+        resolve(core)
+      } else {
+        reject()
+      }
+    } catch(e) {
+      console.log("init error" + e)
       reject()
     }
   })

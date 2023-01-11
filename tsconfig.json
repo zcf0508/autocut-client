@@ -12,13 +12,13 @@
     "strict": true,
     "paths": {
       "@/*": [
-        "./src/*"
+        "./src/renderer/*"
       ]
     },
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true
   },
-  "include": ["src", "components.d.ts", "auto-imports.d.ts"],
+  "include": ["src/renderer", "src/universal", "components.d.ts", "auto-imports.d.ts"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]
