@@ -16,7 +16,9 @@
     "step2": "2. Install AutoCut",
     "downloading": "Downloading now, please do not do anything else.",
     "extracting": "Unzipping now, it will spend some time, please DO NOT do anything else.",
-    "downloadTip": "Paths are allowed to contain only numbers, English, dashes, and underscores"
+    "downloadTip": "Paths are allowed to contain only numbers, English, dashes, and underscores",
+    "reDownloadBtn": "Redownload",
+    "reDownloadTip": "Deleting the old files, please wait..."
   },
   "start": "Start",
   "back": "Back",
