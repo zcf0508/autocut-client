@@ -89,6 +89,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: ./release/${{ VERSION }}/autocut-client_${{ VERSION }}.${{ matrix.FORMAT }}
-          asset_name: autocut-client_${{ VERSION }}.${{ matrix.FORMAT }}
+          asset_path: ./release/${{ env.VERSION }}/autocut-client_${{ env.VERSION }}.${{ matrix.FORMAT }}
+          asset_name: autocut-client_${{ env.VERSION }}.${{ matrix.FORMAT }}
           asset_content_type: ${{ matrix.ASSET_MIME}}
