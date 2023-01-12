@@ -29,8 +29,8 @@ The project can quickly generate video subtitles and edit the video by selecting
 - [x] Export to Adobe Premiere Pro
 - [x] Edit subtitle
 - [x] i18n
+- [x] Support for MacOS
 - [ ] Video clip preview
-- [ ] Support for MacOS
 
 
 # Reference
