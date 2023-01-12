@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request_target:
     branches:
-      - main
+      - master
 
 permissions:
   pull-requests: write

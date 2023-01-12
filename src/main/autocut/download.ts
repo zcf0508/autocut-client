@@ -3,9 +3,40 @@ import * as fs from "fs"
 import * as https from "https"
 import * as path from "path"
 import StreamZip  from "node-stream-zip"
+import got from "got";
 import { autocutCheck } from "./check"
 
-const DOWNLOAD_URL = "https://dubai.huali.cafe/autocut/autocut_0.0.3-build.2022.12.19_x86-64.zip"
+const AUTOCUT_VERSION = "v0.0.3-build.2022.12.30"
+
+const DOWNLOAD_URL = {
+  github: {
+    win32: `https://github.com/zcf0508/autocut/releases/download/${AUTOCUT_VERSION}/autocut_windows.zip`,
+    darwin: `https://github.com/zcf0508/autocut/releases/download/${AUTOCUT_VERSION}/autocut_macos.zip`,
+  },
+  cdn: {
+    win32: `https://dubai.huali.cafe/autocut/${AUTOCUT_VERSION}/autocut_windows.zip`,
+    darwin: `https://dubai.huali.cafe/autocut/${AUTOCUT_VERSION}/autocut_macos.zip`,
+  },
+}
+
+/**
+ * 测试可否正常访问 github
+ */
+function testNetwork(){
+  return new Promise<boolean>((resolve, reject)=>{
+    const req = https.request("https://www.github.com", (res)=>{
+      if (res.statusCode === 200) {
+        resolve(true)
+      } else {
+        resolve(false)
+      }
+    })
+    req.on("error", (e)=>{
+      resolve(false)
+    })
+    req.end()
+  })
+}
 
 /**
  * 下载 autocut 程序
@@ -20,7 +51,7 @@ export async function downloadAutoCut(
   const arch = os.arch()
   console.log(`platform: ${platform}`)
   console.log(`arch: ${arch}`)
-  if(platform.indexOf("win")>=0 && arch === "x64") {
+  if((platform.indexOf("win") >= 0 || platform.indexOf("darwin") >= 0)  && arch === "x64") {
     const zipFilePath = path.join(savePath, "autocut.zip").replaceAll("\\","\\\\").replaceAll(" ","\ ")
     const excutePath = path.join(savePath,"autocut","autocut.exe").replaceAll("\\","\\\\").replaceAll(" ","\ ")
 
@@ -35,55 +66,39 @@ export async function downloadAutoCut(
       return
     }
 
+    cb("downloading", "下载中...", 0)
+
     const file = fs.createWriteStream(zipFilePath);
 
-    https.get(DOWNLOAD_URL, (res)=>{
-      if(res.statusCode !== 200) {
-        cb("error", `下载失败${res.statusCode}`)
-        fs.unlinkSync(zipFilePath)
-        return 
-      }
-      res.on("end", ()=>{
-        console.log("finish download");
-      });
+    const download_url = DOWNLOAD_URL[
+      await testNetwork() ? "github": "cdn"
+    ][platform]
 
-      // 进度
-      const len = parseInt(res.headers["content-length"]) // 文件总长度
-      let cur = 0
-      const total = (len / 1048576).toFixed(2) // 转为M 1048576 - bytes in  1Megabyte
-      res.on("data", function (chunk) {
-        cur += chunk.length
-        const progress = (100.0 * cur / len).toFixed(2) // 当前进度
-        const currProgress = (cur / 1048576).toFixed(2) // 当前了多少
-        console.log("data", progress, currProgress, total)
-
-        cb("downloading", "下载中...", parseFloat(progress))
-      })
-
-      file.on("finish", ()=>{
-        file.close();
-
-        unzip(zipFilePath, savePath, excutePath, cb)
-
-      }).on("error", (err)=>{
-        console.error(err)
-        file.close();
-        fs.unlinkSync(zipFilePath)
-        cb("error", "文件保存失败")
-        return
-      });
-
-      res.pipe(file);
-    }).on("error", (e) => {
-      console.error(e);
-      fs.unlinkSync(zipFilePath)
-      cb("error", `下载失败，请检查网络: ${e}`)
+    if (!download_url || typeof download_url !== "string") {
+      alert("sorry, not support your platform")
+      cb("error", "sorry, not support your platform")
       return
-    });
-    // 下载
+    }
+
+    got.stream(download_url).on("downloadProgress", ({ transferred, total }) => {
+      const progress = (100.0 * transferred / total).toFixed(2) // 当前进度
+      const currProgress = (transferred / 1048576).toFixed(2) // 当前下了多少
+      console.log("data", progress, currProgress, total / 1048576)
+      cb("downloading", "下载中...", parseFloat(progress))
+    }).pipe(file).on("finish", ()=>{
+      file.close();
+      unzip(zipFilePath, savePath, excutePath, cb)
+    }).on("error", (err)=>{
+      console.error(err)
+      file.close();
+      cb("error", "文件保存失败")
+      fs.unlinkSync(zipFilePath)
+      return
+    })
+
   } else {
     console.log("暂不支持")
-    cb("error", "暂不支持")
+    cb("error", "sorry, not support your platform")
     return
   }
 
