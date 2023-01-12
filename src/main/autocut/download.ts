@@ -121,10 +121,15 @@ function unzip(
   zip.on("ready", () => {
     cb("extracting", "解压中", 99 )
     zip.extract(null, extractedPath, (err, count) => {
+      
       console.log(err ? "Extract error" : `Extracted ${count} entries`);
       zip.close();
 
-      cb("success", excutePath )
+      if (err) {
+        cb("error", `解压失败：${err}，请重试`)
+      } else {
+        cb("success", excutePath )
+      }
       return
     });
   })
