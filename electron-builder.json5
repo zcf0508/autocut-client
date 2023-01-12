@@ -5,7 +5,7 @@
   "appId": "com.dubai.autocut-client",
   "asar": true,
   "directories": {
-    "output": "release/${version}"
+    "output": "release/v${version}"
   },
   extraResources: {
     from: './public/resources',
@@ -16,7 +16,7 @@
     "dist"
   ],
   "mac": {
-    "artifactName": "${productName}_${version}.${ext}",
+    "artifactName": "${productName}_v${version}.${ext}",
     "target": [
       "dmg"
     ]
