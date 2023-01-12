@@ -30,7 +30,7 @@
         ]
       }
     ],
-    "artifactName": "${productName}_${version}.${ext}"
+    "artifactName": "${productName}_v${version}.${ext}"
   },
   "nsis": {
     "oneClick": false,
