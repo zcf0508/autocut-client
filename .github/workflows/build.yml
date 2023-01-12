@@ -6,12 +6,42 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
+  createrelease:
+    name: Create Release
+    runs-on: [ubuntu-latest]
+    steps:
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Output Release URL File
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+    - name: Save Release URL File for publish
+      uses: actions/upload-artifact@v1
+      with:
+        name: release_url
+        path: release_url.txt
+
   build:
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        include:
+          - os: macos-latest
+            TARGET: macos
+            FORMAT: dmg
+            ASSET_MIME: application/x-apple-diskimage 
+          - os: windows-latest
+            TARGET: windows
+            FORMAT: exe
+            ASSET_MIME: application/vnd.microsoft.portable-executable 
 
     steps:
       - name: Checkout Code
@@ -36,3 +66,17 @@ jobs:
           name: release_on_${{ matrix. os }}
           path: release/
           retention-days: 5
+      
+      - name: Get Version
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: ./release/${VERSION}/autocut-client_${VERSION}.${{ matrix.FORMAT }}
+          asset_name: autocut-client_${VERSION}.${{ matrix.FORMAT }}
+          asset_content_type: ${{ matrix.ASSET_MIME}}
