@@ -68,7 +68,7 @@ jobs:
       #     retention-days: 5
       
       - name: Get Version
-        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+        run: echo "::set-env name=VERSION::${TAG#v}"
 
       - name: Load Release URL File from release job
         uses: actions/download-artifact@v1
