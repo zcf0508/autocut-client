@@ -12,7 +12,6 @@
     to: './'
   },
   "files": [
-    "adobe-lib",
     "dist-electron",
     "dist"
   ],

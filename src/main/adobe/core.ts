@@ -1,3 +1,7 @@
+import path from "path"
+
+const prod = import.meta.env.PROD
+
 type EXTENSION_SPEC_NAME =  "vscesd";
 type CoreLib = {
   /**
@@ -43,15 +47,30 @@ export function GetCoreLib() {
     const platform = process.platform;
     let core = undefined;
     if (platform === "darwin") {
-      core = require("../../../adobe-lib/esdebugger-core/mac/esdcorelibinterface.node");
+      core = require(
+        path.join(
+          prod ? process.resourcesPath : path.join(__dirname, "../../public/resources"),
+          "./adobe-lib/esdebugger-core/mac/esdcorelibinterface.node",
+        ),
+      );
     }
     else if (platform === "win32") {
       const arch = process.arch;
       if (arch === "x64" || arch === "arm64") {
-        core = require("../../../adobe-lib/esdebugger-core/win/x64/esdcorelibinterface.node");
+        core = require(
+          path.join(
+            prod ? process.resourcesPath : path.join(__dirname, "../../public/resources"),
+            "./adobe-lib/esdebugger-core/win/x64/esdcorelibinterface.node",
+          ),
+        );
       }
       else {
-        core = require("../../../adobe-lib/esdebugger-core/win/win32/esdcorelibinterface.node");
+        core = require(
+          path.join(
+            prod ? process.resourcesPath : path.join(__dirname, "../../public/resources"),
+            "./adobe-lib/esdebugger-core/win/win32/esdcorelibinterface.node",
+          ),
+        );
       }
     }
     if (core === undefined) {

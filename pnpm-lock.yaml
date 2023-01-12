@@ -28,7 +28,7 @@ specifiers:
   unplugin-vue-components: ^0.22.9
   uuid: ^9.0.0
   vite: ^3.2.2
-  vite-electron-plugin: ^0.5.1
+  vite-plugin-electron: ^0.10.4
   vite-plugin-electron-renderer: ^0.11.1
   vitest: ^0.25.3
   vue: ^3.2.40
@@ -68,7 +68,7 @@ devDependencies:
   unplugin-vue-components: 0.22.9_vue@3.2.45
   uuid: 9.0.0
   vite: 3.2.3
-  vite-electron-plugin: 0.5.1
+  vite-plugin-electron: 0.10.4
   vite-plugin-electron-renderer: 0.11.1
   vitest: 0.25.3
   vue: 3.2.45
@@ -4315,21 +4315,16 @@ packages:
     dev: true
     optional: true
 
-  /vite-electron-plugin/0.5.1:
-    resolution: {integrity: sha512-x/KNErmytgkcj3P89LNP2CCJkzjgLrGoi4v0lc3m8QbfbMcLqDK3gA5XON6kY1Q1Vd/yMICuInV4LyMYBTobOQ==}
-    peerDependencies:
-      esbuild: '*'
-    dependencies:
-      chokidar: 3.5.3
-      fast-glob: 3.2.12
-    dev: true
-
   /vite-plugin-electron-renderer/0.11.1:
     resolution: {integrity: sha512-3DDhsooh3pXNUpPZwVKhpj4heezBKzUbFrTVOsCtFEuoH9foq98gRCpJBpfawjpY9hvskg75BgkM/6LmyInatg==}
     peerDependencies:
       esbuild: '*'
     dependencies:
       lib-esm: 0.3.0
+    dev: true
+
+  /vite-plugin-electron/0.10.4:
+    resolution: {integrity: sha512-GrTFfkdavF4BTuqujSL5JvMTHVh4HsnBbnHjnsRB+mPBtS1jnmWxXgWsct7Ys4eOJ86/1tgJAPuCh6+GC40E4Q==}
     dev: true
 
   /vite/3.2.3:

@@ -1,7 +1,7 @@
 {
   "name": "autocut-client",
   "version": "0.0.3",
-  "main": "dist-electron/main/main/index.js",
+  "main": "dist-electron/main/index.js",
   "description": "AutoCut Client",
   "author": "huali <zcf0508@live.com>",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "unplugin-vue-components": "^0.22.9",
     "uuid": "^9.0.0",
     "vite": "^3.2.2",
-    "vite-electron-plugin": "^0.5.1",
+    "vite-plugin-electron": "^0.10.4",
     "vite-plugin-electron-renderer": "^0.11.1",
     "vitest": "^0.25.3",
     "vue": "^3.2.40",
