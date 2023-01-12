@@ -1,6 +1,6 @@
 {
   "name": "autocut-client",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist-electron/main/index.js",
   "description": "AutoCut Client",
   "author": "huali <zcf0508@live.com>",
