@@ -107,6 +107,7 @@ export default defineConfig({
           "process",
           "path",
           "fs",
+          "os",
         ],
       },
     }),
