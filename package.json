@@ -11,7 +11,8 @@
     "format": "eslint --fix --ext .ts --ext .vue ./src ./electron",
     "build": "vue-tsc --noEmit && vite build && electron-builder",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "release": "release-it"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
@@ -34,6 +35,7 @@
     "got": "^12.5.3",
     "hami-vuex": "^0.1.4",
     "lodash-es": "^4.17.21",
+    "release-it": "^15.6.0",
     "subtitle": "^4.2.1",
     "typescript": "^4.9.3",
     "unocss": "^0.46.5",
