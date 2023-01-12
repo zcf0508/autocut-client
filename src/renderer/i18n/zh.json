@@ -15,7 +15,8 @@
     "downloadBtn": "点击下载",
     "step2": "2. 安装 AutoCut",
     "downloading": "正在下载中，请勿进行其它操作",
-    "extracting": "正在解压中，可能需要一点时间，请勿进行其它操作"
+    "extracting": "正在解压中，可能需要一点时间，请勿进行其它操作",
+    "downloadTip": "路径仅允许包含数字、英文、短横、下划线"
   },
   "start": "开始使用",
   "back": "返回",

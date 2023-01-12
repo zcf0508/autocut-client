@@ -11,8 +11,13 @@ export function useAutoCut(){
   const autocutStatus = ref(false)
   
   const checkAutocut = async ()=>{
-    autocutStatus.value = await checkStatus(excutePath.value)
-    statusStore.setAutocut(autocutStatus.value)
+    if (configStore.installPath && !configStore.installPath.match(/[^a-zA-z0-9\:\\\/\-\_\ ]+/)) {  
+      autocutStatus.value = await checkStatus(excutePath.value)
+      statusStore.setAutocut(autocutStatus.value)
+    } else {
+      autocutStatus.value = false
+      statusStore.setAutocut(false)
+    }
   }
 
 

@@ -10,6 +10,12 @@ const { checkAutocut } = useAutoCut()
 
 watch(() => installPath.value, (newVal) => {
   configStore.setInstallPath(newVal)
+  checkAutocut()
+})
+
+const allowDownload = computed(() => {
+  console.log(installPath.value.match(/[^a-zA-z0-9\:\\\/\-\_\ ]+/))
+  return installPath.value && !installPath.value.match(/[^a-zA-z0-9\:\\\/\-\_\ ]+/)
 })
 
 const selectDirectory = () => {
@@ -68,8 +74,11 @@ const debounceDownload = debounce(download, 500)
         {{ t("autocutInstalled.selectBtn") }}
       </button>
     </div>
+    <p v-if="!allowDownload">
+      {{ t('autocutInstalled.downloadTip') }}
+    </p>
     <h2> {{ t("autocutInstalled.step2") }} </h2>
-    <template v-if="autocutStatus">
+    <template v-if="autocutStatus && allowDownload">
       {{ t("autocutInstalled.success") }}
     </template>
     <template v-else>
@@ -77,7 +86,7 @@ const debounceDownload = debounce(download, 500)
         v-if="downloadProcess < 0"
         class="h-[40px] bg-[#F0F0F0] rounded-[4px] border-none  whitespace-nowrap px-2"
         :class="installPath ? 'cursor-pointer' : 'cursor-not-allowed'"
-        :disabled="!installPath"
+        :disabled="!allowDownload"
         @click="debounceDownload"
       >
         {{ t("autocutInstalled.downloadBtn") }}
