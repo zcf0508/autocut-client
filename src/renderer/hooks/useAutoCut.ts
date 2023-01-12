@@ -8,18 +8,15 @@ export function useAutoCut(){
     "autocut", 
     `autocut${os.platform().indexOf("win") >= 0? ".exe" : ""}`,
   ))
-  const autocutStatus = ref(false)
+  const autocutStatus = computed(() => statusStore.autocutStatus)
   
   const checkAutocut = async ()=>{
     if (configStore.installPath && !configStore.installPath.match(/[^a-zA-z0-9\:\\\/\-\_\ ]+/)) {  
-      autocutStatus.value = await checkStatus(excutePath.value)
-      statusStore.setAutocut(autocutStatus.value)
+      statusStore.setAutocut(await checkStatus(excutePath.value))
     } else {
-      autocutStatus.value = false
       statusStore.setAutocut(false)
     }
   }
-
 
   watch(
     () => excutePath.value,
