@@ -80,6 +80,7 @@ jobs:
           echo ::set-output name=upload_url::$value
 
       - name: Set env
+        shell: bash
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Upload Release Asset
