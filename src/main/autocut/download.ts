@@ -53,7 +53,11 @@ export async function downloadAutoCut(
   console.log(`arch: ${arch}`)
   if((platform.indexOf("win") >= 0 || platform.indexOf("darwin") >= 0)  && arch === "x64") {
     const zipFilePath = path.join(savePath, "autocut.zip").replaceAll("\\","\\\\").replaceAll(" ","\ ")
-    const excutePath = path.join(savePath,"autocut","autocut.exe").replaceAll("\\","\\\\").replaceAll(" ","\ ")
+    const excutePath = path.join(
+      savePath, 
+      "autocut", 
+      `autocut${platform.indexOf("win") >= 0? ".exe" : ""}`,
+    ).replaceAll("\\","\\\\").replaceAll(" ","\ ")
 
     if(fs.existsSync(excutePath)){
       if(await autocutCheck(excutePath)){
