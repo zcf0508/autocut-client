@@ -15,6 +15,7 @@ process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_E
 
 
 import { app, BrowserWindow, shell, ipcMain } from "electron"
+import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import { release } from "os"
 import { join } from "path"
 import { registerAutoCut } from "./autocut"
@@ -60,6 +61,10 @@ async function createWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
+
+    installExtension(VUEJS3_DEVTOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log("An error occurred: ", err));
     // Open devTool if the app is not packaged
     win.webContents.openDevTools()
   } else {
