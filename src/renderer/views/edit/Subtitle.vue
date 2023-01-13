@@ -208,7 +208,7 @@ provide("STOP",{
           ref="videoRef" 
           v-show="showVideo" 
           controls
-          class="w-full" 
+          class="w-full max-h-[640px]" 
           :src="props.videoPath"
         ></video>
         <div class="mt-2">
