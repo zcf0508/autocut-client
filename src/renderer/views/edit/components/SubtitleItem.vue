@@ -52,17 +52,24 @@ const changeTextareaHeight = (e:Event) => {
   textarea_height.value = (e.target as HTMLInputElement).scrollHeight
 }
 
+const stop = inject<{stop:()=>any}>("STOP")
+const stopPlay = () => {
+  stop && stop.stop()
+}
+
 onMounted(()=>{
   nextTick(()=>{
     if(textareaRef.value) {
       textarea_height.value = textareaRef.value.scrollHeight
       textareaRef.value.addEventListener("input", changeTextareaHeight)
+      textareaRef.value.addEventListener("focus", stopPlay)
     }
   })
 })
 
 onUnmounted(()=>{
   textareaRef.value?.removeEventListener("input", changeTextareaHeight)
+  textareaRef.value?.removeEventListener("focus", stopPlay)
 })
 
 const input = (e: Event) => {

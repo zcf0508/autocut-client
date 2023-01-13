@@ -155,6 +155,14 @@ const showVideo = ref(true)
 const edit = (index:number, val:string) => {
   srtItemList.value[index].data.text = val
 }
+
+provide("STOP",{
+  stop: ()=>{
+    if(videoRef.value) {
+      videoRef.value.pause()
+    }
+  },
+})
 </script>
 
 <template>
