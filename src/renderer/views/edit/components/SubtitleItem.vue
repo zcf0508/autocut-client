@@ -42,7 +42,15 @@ watch(
   (val) => {
     if(val) {
       nextTick(()=>{
-        itemRef.value?.scrollIntoView()
+        if (
+          itemRef.value 
+          && (itemRef.value?.getBoundingClientRect().top < 0 
+          || itemRef.value?.getBoundingClientRect().bottom > window.innerHeight - 64)
+        ) {
+          itemRef.value?.scrollIntoView({
+            behavior: "smooth",
+          })
+        }
       })
     }
   },
