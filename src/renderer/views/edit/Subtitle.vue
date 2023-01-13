@@ -96,9 +96,28 @@ const selectItem = (index:number) => {
   }
 }
 
+const preview = ref(false)
+
+const getCurrentTimeSubtitleIdx = (currentTime: number) => {
+  return srtItemList.value.findIndex(item => {
+    return item.data.start / 1000 <= currentTime
+      && item.data.end / 1000 >= currentTime
+  })
+}
+
 onMounted(()=>{
   if(videoRef.value) {
     videoRef.value.addEventListener("timeupdate", throttle(()=>{
+      if (preview.value) {
+        const currentSubtitleIdx = getCurrentTimeSubtitleIdx(videoRef.value?.currentTime || 0)
+        // 没被选中，则跳过这个时间段
+        if(currentSubtitleIdx >= 0 && !srtItemList.value[currentSubtitleIdx].checked && videoRef.value) {
+          videoRef.value.pause()
+          videoRef.value.currentTime = (srtItemList.value[currentSubtitleIdx].data.end + 100) / 1000
+          videoRef.value.play()
+          return
+        }
+      }
       if(audioPlayer.value) {
         audioPlayer.value.currentTime = videoRef.value?.currentTime || 0
 
@@ -204,6 +223,12 @@ provide("STOP",{
         </div>
       </div>
       <div class="w-[calc(100%-460px)]">
+        <div>
+          <label for="preview" class="cursor-pointer">
+            <input v-model="preview" type="checkbox" id="preview">
+            <span>{{ t("preview") }}</span>
+          </label>
+        </div>
         <video 
           ref="videoRef" 
           v-show="showVideo" 

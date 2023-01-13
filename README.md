@@ -30,7 +30,7 @@ The project can quickly generate video subtitles and edit the video by selecting
 - [x] Edit subtitle
 - [x] i18n
 - [x] Support for MacOS
-- [ ] Video clip preview
+- [x] Video clip preview
 
 
 # Reference

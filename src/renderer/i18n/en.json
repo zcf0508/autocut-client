@@ -44,5 +44,6 @@
   },
   "setup": {
     "title": "AutoCut Setting"
-  }
+  },
+  "preview": "preview mode, skip the unselected sections"
 }

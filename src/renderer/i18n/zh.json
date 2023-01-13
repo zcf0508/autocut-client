@@ -44,5 +44,6 @@
     "selectDirectory": "请选择保存位置",
     "selectBtn": "选择文件夹",
     "startExport": "开始导出"
-  }
+  },
+  "preview": "预览模式，自动跳过未选择的部分"
 }
