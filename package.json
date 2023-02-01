@@ -39,7 +39,7 @@
     "release-it": "^15.6.0",
     "subtitle": "^4.2.1",
     "typescript": "^4.9.3",
-    "unocss": "^0.46.5",
+    "unocss": "^0.49.2",
     "unplugin-auto-import": "^0.11.4",
     "unplugin-vue-components": "^0.22.9",
     "uuid": "^9.0.0",
