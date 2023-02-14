@@ -1,5 +1,6 @@
 import { spawn } from "child_process"
 import readline from "readline"
+import fs from "fs"
 import { savePath } from "~~/utils"
 import { AutocutConfig } from "~~/../types"
 type GenerateStatus = "processing" | "error" | "success"
@@ -13,6 +14,13 @@ export function generateSubtitle(
   config: AutocutConfig,
   cb: (status: GenerateStatus, msg: string, process?: number) => any,
 ) {
+  const srtFile = filePath.slice(0, filePath.lastIndexOf(".")) + ".srt"
+
+  if (fs.existsSync(srtFile)) {
+    cb("success", "srt file already exist")
+    return
+  }
+
   let fail = false
   // let commad = `${excutePath} -t ${filePath}`
   const p = spawn(
