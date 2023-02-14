@@ -22,23 +22,23 @@ const LANG = [
 
 const MODEL_SIZE = [
   {
-    name: "极小",
+    name: "tiny",
     value: "tiny",
   },
   {
-    name: "基础",
+    name: "base",
     value: "base",
   },
   {
-    name: "小",
+    name: "small",
     value: "small",
   },
   {
-    name: "中",
+    name: "medium",
     value: "medium",
   },
   {
-    name: "大",
+    name: "large",
     value: "large",
   },
 ]
