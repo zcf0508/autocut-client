@@ -5,42 +5,73 @@ import Subtitle from "./Subtitle.vue"
 
 const { t } = useI18n()
 
+const LANG = [
+  {
+    name: "简体中文",
+    value: "zh",
+  },
+  {
+    name: "English",
+    value: "en",
+  },
+  {
+    name: "日本語",
+    value: "ja",
+  },
+]
+
+const MODEL_SIZE = [
+  {
+    name: "极小",
+    value: "tiny",
+  },
+  {
+    name: "基础",
+    value: "base",
+  },
+  {
+    name: "小",
+    value: "small",
+  },
+  {
+    name: "中",
+    value: "medium",
+  },
+  {
+    name: "大",
+    value: "large",
+  },
+]
+
+const DEVICE = [
+  {
+    name: "CPU",
+    value: "cpu",
+  },
+  // 暂时不支持使用 GPU
+  // {
+  //   name: "GPU",
+  //   value: "cuda",
+  // },
+]
+
 /**
  * 原始视频文件地址
  */
 const filePath = ref("")
-/**
- * 生成的字幕文件地址
- */
-const srtFilePath = ref("")
-/**
- * 转码后的视频文件地址
- */
-const videoPath = ref("")
-/**
- * 转码后的音频文件地址
- */
-const audioPath = ref("")
-
-/**
- * 生成字幕进度
- */
-const transcribeProcess = ref(-1)
-
-
-const tasksStatus = reactive({
-  transcribe: "",
-  convertVideo: "",
-  convertAudio: "",
+const config = reactive({
+  lang: "zh",
+  size: "tiny",
+  device: "cpu",
 })
 
-const status = computed(() => {
-  return tasksStatus.transcribe === "success" 
-    && tasksStatus.convertVideo === "success" 
-    && tasksStatus.convertAudio === "success" 
-})
+/**
+ * 是否已开始转录
+ */
+const startStatus = ref(false)
 
 const start = () => {
+  startStatus.value = true
   // 后缀名不是 mp4
   if(filePath.value.slice(-4) !== ".mp4") {
     convertVideo(filePath.value).then(res => {
@@ -59,6 +90,11 @@ const start = () => {
 
     startTranscribe(
       audioPath.value,
+      {
+        lang: config.lang as any,
+        whisperModel: config.size as any,
+        device: config.device as any,
+      },
       (task, process) => {
         transcribeProcess.value = process
         tasksStatus.transcribe = "processing"
@@ -96,8 +132,7 @@ const onDrop = (e: DragEvent)=>{
     console.log("path:", path);
     filePath.value = path
 
-    // TODO: 检查中文路径
-    start()
+    // start()
   }
 }
 const onDropOver = (e: DragEvent)=>{
@@ -114,6 +149,38 @@ onUnmounted(()=>{
   dragRef.value && dragRef.value.removeEventListener("dragover", onDropOver)
 })
 
+
+/**
+ * 生成的字幕文件地址
+ */
+const srtFilePath = ref("")
+/**
+ * 转码后的视频文件地址
+ */
+const videoPath = ref("")
+/**
+ * 转码后的音频文件地址
+ */
+const audioPath = ref("")
+
+/**
+ * 生成字幕进度
+ */
+const transcribeProcess = ref(-1)
+
+
+const tasksStatus = reactive({
+  transcribe: "",
+  convertVideo: "",
+  convertAudio: "",
+})
+
+const status = computed(() => {
+  return tasksStatus.transcribe === "success" 
+    && tasksStatus.convertVideo === "success" 
+    && tasksStatus.convertAudio === "success" 
+})
+
 </script>
 
 <template>
@@ -128,6 +195,44 @@ onUnmounted(()=>{
     >
       <template v-if="!filePath">
         {{ t("dropIn") }}
+      </template>
+      <template v-else-if="!startStatus">
+        <div>{{ t("selectedFile") }} {{ filePath }}</div>
+        <div class="my-1">
+          <span class="inline-block mr-2">{{ t("config.lang") }}</span>
+          <select 
+            v-model="config.lang" 
+            class="h-[39px] border border-[#F0F0F0] bg-white rounded-[4px] px-2" 
+          >
+              <option v-for="l in LANG" :key="l.value" :value="l.value">{{ l.name }}</option>
+            </select>
+        </div>
+        <div class="my-1">
+          <span class="inline-block mr-2">{{ t("config.size") }}</span>
+          <select 
+            v-model="config.size" 
+            class="h-[39px] border border-[#F0F0F0] bg-white rounded-[4px] px-2" 
+          >
+              <option v-for="s in MODEL_SIZE" :key="s.value" :value="s.value">{{ s.name }}</option>
+            </select>
+        </div>
+        <div class="my-1">
+          <span class="inline-block mr-2">{{ t("config.size") }}</span>
+          <select 
+            v-model="config.device" 
+            class="h-[39px] border border-[#F0F0F0] bg-white rounded-[4px] px-2" 
+          >
+              <option v-for="d in DEVICE" :key="d.value" :value="d.value">{{ d.name }}</option>
+            </select>
+        </div>
+        <div class="my-1">
+          <button 
+            class="h-[39px] border border-solid border-[#F0F0F0] bg-white rounded-[4px] px-2"
+            @click="start"
+          >
+            {{ t("start") }}
+          </button>
+        </div>
       </template>
       <template v-else>
         <div>{{ t("selectedFile") }} {{ filePath }}</div>

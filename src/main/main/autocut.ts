@@ -1,6 +1,7 @@
 import {  BrowserWindow, ipcMain, dialog } from "electron"
 import { exportToPr, getSpec } from "~~/adobe"
 import { cutVideo, generateSubtitle } from "~~/autocut"
+import { AutocutConfig } from "~~/../types"
 import { autocutCheck, ffmpegCheck } from "~~/autocut/check"
 import { downloadAutoCut } from "~~/autocut/download"
 import { convertVideo, getAudio } from "~~/ffmpeg"
@@ -48,19 +49,24 @@ export function registerAutoCut(win: BrowserWindow){
     })
   })
 
-  ipcMain.on("start-transcribe", async (e, uuid: string, path: string) => {
+  ipcMain.on("start-transcribe", async (e, uuid: string, path: string, config: AutocutConfig) => {
     const filePath = Buffer.from(path, "base64").toString()
-    generateSubtitle(excutePath, filePath, (status, msg, process) => {
-      e.reply(
-        "report-transcribe", 
-        uuid,
-        {
-          status,
-          msg,
-          process,
-        },
-      )
-    })
+    console.log(config)
+    generateSubtitle(
+      excutePath,
+      filePath,
+      config,
+      (status, msg, process) => {
+        e.reply(
+          "report-transcribe", 
+          uuid,
+          {
+            status,
+            msg,
+            process,
+          },
+        )
+      })
   })
 
   ipcMain.on("convert-video", async (e, uuid: string, path: string) => {

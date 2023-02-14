@@ -1,7 +1,7 @@
 import { spawn } from "child_process"
 import readline from "readline"
 import { savePath } from "~~/utils"
-
+import { AutocutConfig } from "~~/../types"
 type GenerateStatus = "processing" | "error" | "success"
 
 /**
@@ -9,14 +9,20 @@ type GenerateStatus = "processing" | "error" | "success"
  */
 export function generateSubtitle(
   excutePath: string, 
-  filePath: string, 
+  filePath: string,
+  config: AutocutConfig,
   cb: (status: GenerateStatus, msg: string, process?: number) => any,
 ) {
   let fail = false
   // let commad = `${excutePath} -t ${filePath}`
   const p = spawn(
     savePath(excutePath), 
-    ["-t", savePath(filePath), "--device", "cpu", "--whisper-model", "tiny"],
+    [
+      "-t", savePath(filePath), 
+      "--device", config.device || "cpu", 
+      "--whisper-model", config.whisperModel || "tiny",
+      "--lang", config.lang || "zh",
+    ],
   )
 
   const stdoutLineReader = readline.createInterface({

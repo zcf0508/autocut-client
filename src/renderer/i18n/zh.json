@@ -20,7 +20,7 @@
     "reDownloadBtn": "重新下载",
     "reDownloadTip": "正在删除旧文件，请稍后..."
   },
-  "start": "开始使用",
+  "start": "开始",
   "back": "返回",
   "setup": {
     "title": "配置 AutoCut"
@@ -45,5 +45,9 @@
     "selectBtn": "选择文件夹",
     "startExport": "开始导出"
   },
-  "preview": "预览模式，自动跳过未选择的部分"
+  "preview": "预览模式，自动跳过未选择的部分",
+  "config": {
+    "lang": "视频语言",
+    "size": "设备"
+  }
 }

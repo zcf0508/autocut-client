@@ -18,7 +18,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true
   },
-  "include": ["src/main.ts", "src/renderer", "src/universal", "components.d.ts", "auto-imports.d.ts"],
+  "include": ["src/main.ts", "src/renderer", "src/universal", "components.d.ts", "auto-imports.d.ts", "src/types.d.tsts"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]

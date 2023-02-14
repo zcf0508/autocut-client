@@ -13,5 +13,5 @@
     },
     "allowSyntheticDefaultImports": true
   },
-  "include": ["package.json", "src/main", "test", "auto-imports.d.ts"]
+  "include": ["package.json", "src/main", "test", "auto-imports.d.ts", "src/types.d.ts"]
 }

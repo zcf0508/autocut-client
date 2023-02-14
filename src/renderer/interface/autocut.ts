@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { ipcRenderer } from "electron"
+import { AutocutConfig } from "src/types"
 
 /**
  * 检查 AuctoCut 可执行状态
@@ -96,7 +97,11 @@ const transcribeTasks = new Set<string>()
  * @param processCallback 进度回调
  * @returns 返回转录成功后的字幕地址
  */
-export function startTranscribe(filePath: string, processCallback: (task: string, process: number) => any) {
+export function startTranscribe(
+  filePath: string, 
+  config: AutocutConfig,
+  processCallback: (task: string, process: number) => any,
+) {
   return new Promise<string>((resolve, reject) => {
     const uuid = uuidv4()
 
@@ -130,7 +135,7 @@ export function startTranscribe(filePath: string, processCallback: (task: string
 
     })
 
-    ipcRenderer.send("start-transcribe", uuid, Buffer.from(filePath).toString("base64"))
+    ipcRenderer.send("start-transcribe", uuid, Buffer.from(filePath).toString("base64"), config)
     transcribeTasks.add(uuid)
   }).finally(() => {
     if (transcribeTasks.size === 0) {

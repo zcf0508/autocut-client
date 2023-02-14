@@ -6,7 +6,7 @@ import StreamZip  from "node-stream-zip"
 import got from "got";
 import { autocutCheck } from "./check"
 
-const AUTOCUT_VERSION = "v0.0.3-build.2023.01.12"
+const AUTOCUT_VERSION = "v0.0.3-build.2023.02.14"
 
 const DOWNLOAD_URL = {
   github: {
