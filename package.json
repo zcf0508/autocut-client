@@ -33,6 +33,7 @@
     "eslint": "^8.27.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-vue": "^9.7.0",
+    "fix-path": "^4.0.0",
     "got": "^12.5.3",
     "hami-vuex": "^0.1.4",
     "lodash-es": "^4.17.21",
