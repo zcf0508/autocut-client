@@ -74,7 +74,7 @@ const showRedownloading = ref(false)
 const reDownload = () => {
   try{
     showRedownloading.value = true
-    const file1 = path.join(installPath.value, "autocut", `autocut${os.platform().indexOf("win") >= 0? ".exe" : ""}`)
+    const file1 = path.join(installPath.value, "autocut", `autocut${os.platform().indexOf("win") === 0? ".exe" : ""}`)
     if(fs.existsSync(file1)){
       fs.unlinkSync(file1)
     }

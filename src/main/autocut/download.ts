@@ -4,6 +4,8 @@ import * as https from "https"
 import * as path from "path"
 import StreamZip  from "node-stream-zip"
 import got from "got";
+import { execSync } from "child_process"
+
 import { autocutCheck } from "./check"
 
 const AUTOCUT_VERSION = "v0.0.3-build.2023.02.14"
@@ -51,12 +53,12 @@ export async function downloadAutoCut(
   const arch = os.arch()
   console.log(`platform: ${platform}`)
   console.log(`arch: ${arch}`)
-  if((platform.indexOf("win") >= 0 || platform.indexOf("darwin") >= 0)  && arch === "x64") {
+  if((platform.indexOf("win") === 0 || platform.indexOf("darwin") === 0)  && arch === "x64") {
     const zipFilePath = path.join(savePath, "autocut.zip").replaceAll("\\","\\\\").replaceAll(" ","\ ")
     const excutePath = path.join(
       savePath, 
       "autocut", 
-      `autocut${platform.indexOf("win") >= 0? ".exe" : ""}`,
+      `autocut${platform.indexOf("win") === 0? ".exe" : ""}`,
     ).replaceAll("\\","\\\\").replaceAll(" ","\ ")
 
     if(fs.existsSync(excutePath)){
@@ -132,6 +134,9 @@ function unzip(
       if (err) {
         cb("error", `解压失败：${err}，请重试`)
       } else {
+        if(os.platform().indexOf("darwin") === 0){
+          execSync(`chmod 777 ${excutePath}`)
+        }
         cb("success", excutePath )
       }
       return

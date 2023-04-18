@@ -6,7 +6,7 @@ export function useAutoCut(){
   const excutePath = computed(() => path.join(
     configStore.installPath, 
     "autocut", 
-    `autocut${os.platform().indexOf("win") >= 0? ".exe" : ""}`,
+    `autocut${os.platform().indexOf("win") === 0? ".exe" : ""}`,
   ))
   const autocutStatus = computed(() => statusStore.autocutStatus)
   
