@@ -8,7 +8,7 @@ import { execSync } from "child_process"
 
 import { autocutCheck } from "./check"
 
-const AUTOCUT_VERSION = "v0.0.3-build.2023.02.14"
+const AUTOCUT_VERSION = "v0.0.3-build.2023.04.20"
 
 const DOWNLOAD_URL = {
   github: {
@@ -135,7 +135,8 @@ function unzip(
         cb("error", `解压失败：${err}，请重试`)
       } else {
         if(os.platform().indexOf("darwin") === 0){
-          execSync(`chmod 777 ${excutePath}`)
+          execSync(`chmod -R 777 ${path.resolve(excutePath, "..")}`)
+          execSync(`cd ${path.resolve(excutePath, "..")} && bash ./build.sh`)
         }
         cb("success", excutePath )
       }
