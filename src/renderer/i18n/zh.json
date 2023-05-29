@@ -49,5 +49,6 @@
   "config": {
     "lang": "视频语言",
     "size": "设备"
-  }
+  },
+  "selectAll": "全选"
 }

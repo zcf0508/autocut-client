@@ -95,8 +95,10 @@ const input = (e: Event) => {
     :class="selected ? 'border-[#0063b1]' : 'border-[#F0F0F0]'"
     ref="itemRef"
   >
-    <div class="w-[64px] flex justify-center items-center" @click.stop="change">
-      <input type="checkbox" :checked="node.checked" />
+    <div class="w-[64px] flex justify-center items-center " @click.stop="change">
+      <!-- <input type="checkbox" :checked="node.checked" /> -->
+      <i v-if="!node.checked" class="i-carbon:checkbox text-lg"></i>
+      <i v-if="node.checked" class="i-carbon:checkbox-checked-filled text-lg text-[#0063b1]"></i>
     </div>
     <div class="w-[calc(100%-64px)]">
       <div>{{ `${formatTimestamp(node.data.start)} - ${formatTimestamp(node.data.end)}` }}</div>
@@ -124,5 +126,10 @@ const input = (e: Event) => {
 }
 .edit:focus {
   outline: none;
+}
+
+/* set checked color */
+input[type="checkbox"]:checked::after {
+  color: #0063b1;
 }
 </style>

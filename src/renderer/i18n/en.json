@@ -49,5 +49,6 @@
   "config": {
     "lang": "Language Of Video",
     "size": "Device"
-  }
+  },
+  "selectAll": "Select All"
 }

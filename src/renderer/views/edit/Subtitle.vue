@@ -182,6 +182,30 @@ provide("STOP",{
     }
   },
 })
+
+const selectAllStatus = computed(() => {
+  // -1 - select nothing
+  // 0 - select something
+  // 1 - select all
+
+  const checkedSrtItems = srtItemList.value.filter(i => i.checked)
+
+  if(checkedSrtItems.length === 0) {
+    return -1
+  }
+  if(checkedSrtItems.length === srtItemList.value.length) {
+    return 1
+  }
+  return 0
+})
+
+function changeSelectAll() {
+  if(selectAllStatus.value === -1) {
+    srtItemList.value.forEach(i => i.checked = true)
+  } else {
+    srtItemList.value.forEach(i => i.checked = false)
+  }
+}
 </script>
 
 <template>
@@ -194,6 +218,12 @@ provide("STOP",{
     </div>
     <div class="flex justify-between w-[94%] mx-auto h-[calc(100%-37px-16px)]">
       <div class="w-[460px] mr-4  overflow-y-scroll relative" id="list">
+        <div class="flex items-center sticky top-0 bg-[#fafafa] py-1 pl-2 cursor-pointer z-10" @click="changeSelectAll">
+          <i v-if="selectAllStatus === -1" class="i-carbon:checkbox text-lg"></i>
+          <i v-if="selectAllStatus === 0" class="i-carbon:checkbox-indeterminate-filled text-lg text-[#0063b1]"></i>
+          <i v-if="selectAllStatus === 1" class="i-carbon:checkbox-checked-filled text-lg text-[#0063b1]"></i>
+          <span class="ml-1">{{ t("selectAll") }}</span>
+        </div>
         <subtitle-item
           v-for="(node, index) in srtItemList" 
           :key="index"
