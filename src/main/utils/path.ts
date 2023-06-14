@@ -1,4 +1,4 @@
-export function savePath(path: string){
+export function safePath(path: string){
   let res = path
   // 已经处理过
   if(path.indexOf("\\ ") >= 0 || path.indexOf("\\\\") >= 0) {

@@ -1,7 +1,7 @@
 import { spawn } from "child_process"
 import readline from "readline"
 import fs from "fs"
-import { savePath } from "~~/utils"
+import { safePath } from "~~/utils"
 import { AutocutConfig } from "~~/../types"
 type GenerateStatus = "processing" | "error" | "success"
 
@@ -24,9 +24,9 @@ export function generateSubtitle(
   let fail = false
   // let commad = `${excutePath} -t ${filePath}`
   const p = spawn(
-    savePath(excutePath), 
+    safePath(excutePath), 
     [
-      "-t", savePath(filePath), 
+      "-t", safePath(filePath), 
       "--device", config.device || "cpu", 
       "--whisper-model", config.whisperModel || "tiny",
       "--lang", config.lang || "zh",
@@ -116,8 +116,8 @@ export function cutVideo(
 ){
   let fail = false
   const p = spawn(
-    savePath(excutePath),
-    ["-c", savePath(videoFilePath), savePath(srtFilePath)],
+    safePath(excutePath),
+    ["-c", safePath(videoFilePath), safePath(srtFilePath)],
   )
   
   const stdoutLineReader = readline.createInterface({
@@ -158,7 +158,22 @@ export function cutVideo(
         process,
       )
     }
-    if (line.indexOf("Saved video to") >= 0){
+    if (line.indexOf("Saved media to") >= 0){
+
+      const time = new Date().getTime()
+      // 修改保存后的文件名
+      const cutedVideoPath = safePath(videoFilePath).slice(0, safePath(videoFilePath).lastIndexOf(".")) + "_cut.mp4"
+      const renamedCutedVideoPath = safePath(videoFilePath)
+        .slice(0, safePath(videoFilePath).lastIndexOf(".")) + `_cut_${time}.mp4`
+
+      fs.renameSync(cutedVideoPath, renamedCutedVideoPath)
+
+      const renamedCutedSrtPath = safePath(srtFilePath)
+        .slice(0, safePath(srtFilePath).lastIndexOf(".")) + `_${time}.srt`
+
+      fs.renameSync(safePath(srtFilePath), renamedCutedSrtPath)
+      
+
       cb(
         "success",
         "saved",

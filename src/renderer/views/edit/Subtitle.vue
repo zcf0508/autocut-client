@@ -276,7 +276,7 @@ function changeSelectAll() {
       v-if="exporting"
       class="absolute top-0 right-0 bottom-0 left-0 
       bg-[rgba(0,99,177,0.3)] font-bold text-white
-      flex justify-center items-center "
+      flex justify-center items-center z-20"
       @click.stop
     >
       {{ t("exporting") }}

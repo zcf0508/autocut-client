@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import { spawn } from "child_process"
 import readline from "readline"
-import { savePath } from "~~/utils"
+import { safePath } from "~~/utils"
 
 type ProcessStatus = "error" | "processing" | "success"
 
@@ -26,7 +26,7 @@ export function getAudio(
   const p = spawn(
     "ffmpeg",
     [
-      "-i", savePath(video), "-y", 
+      "-i", safePath(video), "-y", 
       "-vn",  "-acodec", "pcm_s16le", "-ac", "1", "-ar", "8000", 
       exportPath,
     ],
@@ -82,10 +82,10 @@ export function convertVideo(
   const p = spawn(
     "ffmpeg",
     [
-      "-i", savePath(video), "-y", 
+      "-i", safePath(video), "-y", 
       "-c:v", "libx264", "-c:a", "acc", "-pix_fmt", "yuv420p", "-ac", "2", "-movflags", "faststart",
       "-threads", "8", "-preset", "ultrafast", 
-      savePath(exportPath),
+      safePath(exportPath),
     ],
   )
   const stdoutLineReader = readline.createInterface({
