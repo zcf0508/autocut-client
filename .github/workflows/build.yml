@@ -38,7 +38,7 @@ jobs:
             TARGET: macos
             FORMAT: dmg
             ASSET_MIME: application/x-apple-diskimage 
-          - os: windows-latest
+          - os: windows-2022
             TARGET: windows
             FORMAT: exe
             ASSET_MIME: application/vnd.microsoft.portable-executable 

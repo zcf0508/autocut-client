@@ -11,10 +11,17 @@ if(!fs.existsSync("./lib/whisper.cpp/build/Release/whisper-addon.node")) {
 }
 
 if(
-  fs.existsSync("./lib/whisper.cpp/build/Release/whisper-addon.node") 
+  (
+    fs.existsSync("./lib/whisper.cpp/build/Release/whisper-addon.node") 
+    || fs.existsSync("./lib/whisper.cpp/build/bin/Release/whisper-addon.node") 
+  )
   && !fs.existsSync("./public/resources/whisper-addon.node")
 ) {
-  fs.cpSync("./lib/whisper.cpp/build/Release/whisper-addon.node", "./public/resources/whisper-addon.node")
+  if(process.platform === "win32") {
+    fs.cpSync("./lib/whisper.cpp/build/bin/Release/whisper-addon.node", "./public/resources/whisper-addon.node")
+  } else {
+    fs.cpSync("./lib/whisper.cpp/build/Release/whisper-addon.node", "./public/resources/whisper-addon.node")
+  }
 }
 
 if(!fs.existsSync("./lib/vad/CMakeLists.txt")) {
