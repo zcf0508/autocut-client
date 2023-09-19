@@ -13,14 +13,31 @@ type WhisperAsync = (options: {
   language: string, 
   model: string,
   fname_inp: string
-}) => Promise<Array<[string,string,string]>>
+  /** default: 0 */
+  max_len?: number
+  /** default: false */
+  translate?: boolean
+  /** default: false */
+  no_timestamps?: boolean
+}) => Promise<Array<[
+  /** start time , format 00:00:00,000 */
+  string,
+  /** end time , format 00:00:00,000 */
+  string,
+  /** subtitle */
+  string
+]>>
 
 const whisperAsync: WhisperAsync = promisify(whisper);
 
-export async function transcribe(language="en", modelPath: string, filePath: string) {
+export async function transcribe(
+  modelPath: string, 
+  filePath: string, 
+  options: Omit<Parameters<WhisperAsync>[0], "model" | "fname_inp"> = {language: "en"},
+) {
   return await whisperAsync({
-    language,
     model: modelPath,
     fname_inp: filePath,
+    ...options,
   })
 }
