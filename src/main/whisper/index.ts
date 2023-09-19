@@ -9,5 +9,18 @@ const { whisper } = require(path.join(
 ));
 import { promisify } from "node:util";
 
-export const whisperAsync = promisify(whisper);
+type WhisperAsync = (options: {
+  language: string, 
+  model: string,
+  fname_inp: string
+}) => Promise<Array<[string,string,string]>>
 
+const whisperAsync: WhisperAsync = promisify(whisper);
+
+export async function transcribe(language="en", modelPath: string, filePath: string) {
+  return await whisperAsync({
+    language,
+    model: modelPath,
+    fname_inp: filePath,
+  })
+}

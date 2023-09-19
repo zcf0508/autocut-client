@@ -3,7 +3,7 @@ const fs = require("node:fs")
 
 
 if(!fs.existsSync("./lib/whisper.cpp/Makefile")) {
-  shelljs.exec("git clone https://github.com/ggerganov/whisper.cpp.git lib/whisper.cpp --depth=1")
+  shelljs.exec("git clone https://github.com/ggerganov/whisper.cpp.git lib/whisper.cpp -b v1.4.0 --depth=1")
 }
 
 if(!fs.existsSync("./lib/whisper.cpp/build/Release/whisper-addon.node")) {
