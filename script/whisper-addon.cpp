@@ -317,14 +317,12 @@ Napi::Value whisper(const Napi::CallbackInfo& info) {
   std::string input = whisper_params.Get("fname_inp").As<Napi::String>();
   int32_t max_len = whisper_params.Get("max_len").As<Napi::Number>();
   bool translate = whisper_params.Get("translate").As<Napi::Boolean>();
-  bool no_timestamps = whisper_params.Get("no_timestamps").As<Napi::Boolean>();
 
   params.language = language;
   params.model = model;
   params.fname_inp.emplace_back(input);
   params.max_len = max_len;
   params.translate = translate;
-  params.no_timestamps = no_timestamps;
 
   Napi::Function callback = info[1].As<Napi::Function>();
   Worker* worker = new Worker(callback, params);
