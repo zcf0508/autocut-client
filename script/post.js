@@ -25,7 +25,7 @@ if(!fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whis
 if(
   (
     fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node")) 
-    || fs.existsSync(path.resolve(__dirname, "./lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
+    || fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
   )
   && !fs.existsSync(path.resolve(__dirname, "../public/resources/whisper-addon.node"))
 ) {
