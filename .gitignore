@@ -28,3 +28,4 @@ dist-electron
 lib
 public/resources/*addon.node
 public/resources/*onnx
+test/**/ggml-*.bin

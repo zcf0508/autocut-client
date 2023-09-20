@@ -1,7 +1,8 @@
 import path from "path";
 
 const prod = import.meta.env.PROD
-const resourcesPath = prod ? process.resourcesPath : path.join(__dirname, "../../public/resources")
+const test = import.meta.env.TEST
+const resourcesPath = prod ? process.resourcesPath : path.join(__dirname, "../../../public/resources")
 
 const { whisper } = require(path.join(
   resourcesPath,
@@ -17,8 +18,6 @@ type WhisperAsync = (options: {
   max_len?: number
   /** default: false */
   translate?: boolean
-  /** default: false */
-  no_timestamps?: boolean
 }) => Promise<Array<[
   /** start time , format 00:00:00,000 */
   string,

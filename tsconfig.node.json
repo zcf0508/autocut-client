@@ -6,6 +6,9 @@
     "moduleResolution": "node",
     "jsx": "preserve",
     "resolveJsonModule": true,
+    "types": [
+      "vitest/globals"
+    ],
     "paths": {
       "~~/*": [
         "./src/main/*"

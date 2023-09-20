@@ -1,81 +1,69 @@
 name: CI
 
 on:
-  pull_request_target:
+  push:
     branches:
       - master
 
-permissions:
-  pull-requests: write
+  pull_request:
+    branches:
+      - master
+
+  merge_group: {}
 
 jobs:
-  job1:
-    name: Check Not Allowed File Changes
+  lint:
     runs-on: ubuntu-latest
-    outputs:
-      markdown_change: ${{ steps.filter_markdown.outputs.change }}
-      markdown_files: ${{ steps.filter_markdown.outputs.change_files }}
     steps:
+      - uses: actions/checkout@v3
 
-      - name: Check Not Allowed File Changes
-        uses: dorny/paths-filter@v2
-        id: filter_not_allowed
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Set node
+        uses: actions/setup-node@v3
         with:
-          list-files: json
-          filters: |
-            change:
-              - 'package-lock.json'
-              - 'yarn.lock'
-              - 'pnpm-lock.yaml'
+          node-version: 18
+          cache: pnpm
 
-      # ref: https://github.com/github/docs/blob/main/.github/workflows/triage-unallowed-contributions.yml
-      - name: Comment About Changes We Can't Accept
-        if: ${{ steps.filter_not_allowed.outputs.change == 'true' }}
-        uses: actions/github-script@v6
-        with:
-          script: |
-            let workflowFailMessage = "It looks like you've modified some files that we can't accept as contributions."
-            try {
-              const badFilesArr = [
-                'package-lock.json',
-                'yarn.lock',
-                'pnpm-lock.yaml',
-              ]
-              const badFiles = badFilesArr.join('\n- ')
-              const reviewMessage = `👋 Hey there spelunker. It looks like you've modified some files that we can't accept as contributions. The complete list of files we can't accept are:\n- ${badFiles}\n\nYou'll need to revert all of the files you changed in that list using [GitHub Desktop](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/managing-commits/reverting-a-commit) or \`git checkout origin/main <file name>\`. Once you get those files reverted, we can continue with the review process. :octocat:\n\nMore discussion:\n- https://github.com/electron-vite/electron-vite-vue/issues/192`
-              createdComment = await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.number,
-                body: reviewMessage,
-              })
-              workflowFailMessage = `${workflowFailMessage} Please see ${createdComment.data.html_url} for details.`
-            } catch(err) {
-              console.log("Error creating comment.", err)
-            }
-            core.setFailed(workflowFailMessage)
+      - name: Install
+        run: pnpm i
 
-      - name: Check Not Linted Markdown
-        if: ${{ always() }}
-        uses: dorny/paths-filter@v2
-        id: filter_markdown
-        with:
-          list-files: shell
-          filters: |
-            change:
-              - added|modified: '*.md'
+      - name: Lint
+        run: pnpm run lint
 
+  test:
+    runs-on: ${{ matrix.os }}
 
-  job2:
-    name: Lint Markdown
-    runs-on: ubuntu-latest
-    needs: job1
-    if: ${{ always() && needs.job1.outputs.markdown_change == 'true' }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            node_version: 18
+          - os: windows-latest
+            node_version: 18
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
 
-      - name: Lint markdown
-        run: npx markdownlint-cli ${{ needs.job1.outputs.markdown_files }} --ignore node_modules
+      - uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Set node ${{ matrix.node_version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: pnpm
+
+      - run: corepack enable
+
+      - name: Install
+        run: pnpm i
+
+      - name: Test
+        run: pnpm run test

@@ -22,10 +22,12 @@ export default defineConfig({
     __VUE_OPTIONS_API__: false, // 不使用 Options Api
   },
   test: {
+    include: [path.resolve(__dirname, "./test/**/*.spec.ts")],
     alias: [
       {find: "@", replacement: path.resolve(__dirname, "./src/renderer/")},
       {find: "~~", replacement: path.resolve(__dirname, "./src/main/")},
     ],
+    globals: true,
   },
   plugins: [
     vue(),
@@ -39,7 +41,7 @@ export default defineConfig({
         /\.vue$/,
         /\.vue\?vue/, // .vue
       ],
-      imports: ["vue", "vue-router", "@vueuse/core", "vitest", "vue-i18n"],
+      imports: ["vue", "vue-router", "@vueuse/core", "vue-i18n"],
       dirs: ["src/renderer/hooks", "src/renderer/store", "src/renderer/utils", "src/renderer/api"],
       dts: true,
     }),
