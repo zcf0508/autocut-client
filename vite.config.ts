@@ -22,7 +22,7 @@ export default defineConfig({
     __VUE_OPTIONS_API__: false, // 不使用 Options Api
   },
   test: {
-    include: [path.resolve(__dirname, "./test/**/*.spec.ts")],
+    include: ["./test/**/*.spec.ts"],
     alias: [
       {find: "@", replacement: path.resolve(__dirname, "./src/renderer/")},
       {find: "~~", replacement: path.resolve(__dirname, "./src/main/")},
