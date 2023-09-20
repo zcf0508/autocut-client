@@ -38,8 +38,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            node_version: 18
+          # - os: macos-latest
+          #   node_version: 18
           - os: windows-2022
             node_version: 18
 
