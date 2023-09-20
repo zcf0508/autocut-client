@@ -9,7 +9,7 @@
   "scripts": {
     "postinstall": "node ./script/post.js",
     "dev": "vite",
-    "lint": "eslint --fix --ext .ts --ext .vue ./src",
+    "lint": "eslint --ext .ts --ext .vue ./src",
     "format": "eslint --fix --ext .ts --ext .vue ./src",
     "build": "vue-tsc --noEmit && vite build && electron-builder",
     "test": "vitest",
