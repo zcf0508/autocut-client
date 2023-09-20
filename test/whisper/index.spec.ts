@@ -23,9 +23,7 @@ function downloadModel(){
   })
 }
 
-
-describe("whisper", async () => {
-
+beforeEach(async () => {
   if(!fs.existsSync(modelPath)) {
     try {
       await downloadModel()
@@ -33,9 +31,11 @@ describe("whisper", async () => {
       if(fs.existsSync(modelPath)) {
         fs.unlinkSync(modelPath)
       }
-      return
     }
   }	
+})
+
+describe("whisper", async () => {
 
   it("transcribe ", async () => {
     const wavFilePath = path.resolve(__dirname, "./jfk.wav");

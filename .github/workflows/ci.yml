@@ -65,5 +65,8 @@ jobs:
       - name: Install
         run: pnpm i
 
+      - name: Build Addons
+        run: node ./script/post.js
+
       - name: Test
         run: pnpm run test
