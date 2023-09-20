@@ -31,11 +31,19 @@ const whisperAsync: WhisperAsync = promisify(whisper);
 export function transcribe(
   modelPath: string, 
   filePath: string, 
-  options: Omit<Parameters<WhisperAsync>[0], "model" | "fname_inp"> = {language: "en"},
+  _options: Omit<Parameters<WhisperAsync>[0], "model" | "fname_inp"> = {language: "en"},
 ) {
+  const defaultOptions = {
+    language: "en",
+    max_len: 0,
+    translate: false,
+  }
   return whisperAsync({
     model: modelPath,
     fname_inp: filePath,
-    ...options,
+    ...{
+      ...defaultOptions,
+      ..._options,
+    },
   })
 }
