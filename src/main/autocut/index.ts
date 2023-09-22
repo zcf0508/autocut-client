@@ -217,7 +217,7 @@ export async function generateSubtitle1(
   const srtFile = file.slice(0, file.lastIndexOf(".")) + ".srt"
 
   const srt: NodeList = []
-  const times = detectVoiceActivity(file)
+  const times = await detectVoiceActivity(file)
 
   let res: Array<WhisperResItem[]> = []
 
