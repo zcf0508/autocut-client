@@ -3,7 +3,7 @@ import path from "path";
 import { promisify } from "node:util";
 
 const prod = import.meta.env.PROD
-const resourcesPath = prod ? process.resourcesPath : path.resolve(__dirname, "../../../public/resources")
+const resourcesPath = prod ? process.resourcesPath : path.resolve(__dirname, "../../public/resources")
 
 const addonPath = path.resolve(resourcesPath, "./whisper-addon.node")
 
