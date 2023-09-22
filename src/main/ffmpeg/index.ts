@@ -1,5 +1,6 @@
 import * as fs from "fs"
 import os from "os";
+import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { spawn } from "child_process"
 import readline from "readline"
@@ -126,45 +127,70 @@ function _transformTimeformat(time: string | number): string {
   const [second, millisecond] = `${time}`.split(".")
   const date = new Date(0)
   date.setSeconds(+second)
-  return date.toISOString().substr(11, 12).replace("T", "").replace("Z", "") + "." + millisecond
+  return date.toISOString().substr(11, 8).replace("T", "").replace("Z", "") + "." + millisecond.slice(0, 3)
 }
 
-export function slice(file: string, times: ReturnType<Vad>) {
-  // ffmpeg -i input_audio.mp3 -ss 00:00:02 -t 00:00:03 -c:a pcm_s16le output_audio.wav
-
-  const sliceRes: Array<ReturnType<Vad>[0] & {file: string}> = []
-
-  const tempDir = os.tmpdir()
-
-  times.forEach((time, index) => {
+function _ffmpegSlice(file: string, start: string, end: string) {
+  const tempDir = path.join(os.tmpdir(), "./autocut-client")
+  if(!fs.existsSync(tempDir)){
+    fs.mkdirSync(tempDir)
+  }
+  return new Promise<ReturnType<Vad>[0] & {file: string}>((resolve, reject) => {
     const id = uuidv4()
     const exportPath = `${tempDir}/${id}.wav`
+    console.log("ffmpeg",
+      [
+        "-i", safePath(file), "-y", 
+        "-ss", _transformTimeformat(start), 
+        "-t", _transformTimeformat(Number(end) - Number(start)), 
+        "-c:a", "pcm_s16le", 
+        exportPath,
+      ])
     const p = spawn(
       "ffmpeg",
       [
         "-i", safePath(file), "-y", 
-        "-ss", _transformTimeformat(time.start), 
-        "-t", _transformTimeformat(Number(time.end) - Number(time.start)), 
+        "-ss", _transformTimeformat(start), 
+        "-t", _transformTimeformat(Number(end) - Number(start)), 
         "-c:a", "pcm_s16le", 
         exportPath,
       ],
     )
+
     p.on("close", (code) => {
       console.log(`child process exited with code ${code}`);
-      sliceRes.push({
-        ...time,
-        file: exportPath,
-      })
-      if(index === times.length - 1){
-        console.log("sliceRes", sliceRes)
+      if(code === 0) {
+        resolve({
+          start,
+          end,
+          file: exportPath,
+        })
+      } else {
+        reject()
       }
     })
+    
   })
+}
+
+export async function slice(file: string, times: ReturnType<Vad>) {
+  // ffmpeg -i input_audio.mp3 -ss 00:00:02 -t 00:00:03 -c:a pcm_s16le output_audio.wav
+
+  console.log(os.tmpdir())
+
+  const sliceRes = await Promise.all(times.map(time => {
+    return _ffmpegSlice(file, time.start, time.end)
+  }))
+  
   return {
     sliceRes,
     removeTemps() {
       sliceRes.forEach((item) => {
-        fs.unlinkSync(item.file)
+        try{
+          fs.unlinkSync(item.file)
+        } catch(err) {
+          console.error(err)
+        }
       })
     },
   }
