@@ -1,7 +1,10 @@
 import * as fs from "fs"
+import os from "os";
+import { v4 as uuidv4 } from "uuid";
 import { spawn } from "child_process"
 import readline from "readline"
 import { safePath } from "~~/utils"
+import { type Vad } from "~~/vad"
 
 type ProcessStatus = "error" | "processing" | "success"
 
@@ -116,4 +119,53 @@ export function convertVideo(
       cb("error", "close")
     }
   });
+}
+
+/** like 2.304000 -> 00:00:02.304 */
+function _transformTimeformat(time: string | number): string {
+  const [second, millisecond] = `${time}`.split(".")
+  const date = new Date(0)
+  date.setSeconds(+second)
+  return date.toISOString().substr(11, 12).replace("T", "").replace("Z", "") + "." + millisecond
+}
+
+export function slice(file: string, times: ReturnType<Vad>) {
+  // ffmpeg -i input_audio.mp3 -ss 00:00:02 -t 00:00:03 -c:a pcm_s16le output_audio.wav
+
+  const sliceRes: Array<ReturnType<Vad>[0] & {file: string}> = []
+
+  const tempDir = os.tmpdir()
+
+  times.forEach((time, index) => {
+    const id = uuidv4()
+    const exportPath = `${tempDir}/${id}.wav`
+    const p = spawn(
+      "ffmpeg",
+      [
+        "-i", safePath(file), "-y", 
+        "-ss", _transformTimeformat(time.start), 
+        "-t", _transformTimeformat(Number(time.end) - Number(time.start)), 
+        "-c:a", "pcm_s16le", 
+        exportPath,
+      ],
+    )
+    p.on("close", (code) => {
+      console.log(`child process exited with code ${code}`);
+      sliceRes.push({
+        ...time,
+        file: exportPath,
+      })
+      if(index === times.length - 1){
+        console.log("sliceRes", sliceRes)
+      }
+    })
+  })
+  return {
+    sliceRes,
+    removeTemps() {
+      sliceRes.forEach((item) => {
+        fs.unlinkSync(item.file)
+      })
+    },
+  }
 }
