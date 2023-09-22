@@ -14,6 +14,15 @@ if(!fs.existsSync(addonPath)) {
 
 const { whisper } = require(addonPath);
 
+export type WhisperResItem = [
+  /** start time , format 00:00:00,000 */
+  string,
+  /** end time , format 00:00:00,000 */
+  string,
+  /** subtitle */
+  string
+]
+
 type WhisperAsync = (options: {
   language: string, 
   model: string,
@@ -22,28 +31,23 @@ type WhisperAsync = (options: {
   max_len?: number
   /** default: false */
   translate?: boolean
-}) => Promise<Array<[
-  /** start time , format 00:00:00,000 */
-  string,
-  /** end time , format 00:00:00,000 */
-  string,
-  /** subtitle */
-  string
-]>>
+}) => Promise<Array<WhisperResItem>>
 
 const whisperAsync: WhisperAsync = promisify(whisper);
 
-export function transcribe(
+export async function transcribe(
   modelPath: string, 
   filePath: string, 
   _options: Omit<Parameters<WhisperAsync>[0], "model" | "fname_inp"> = {language: "en"},
+  idx?: number,
+  cb?: (idx: number) => any,
 ) {
   const defaultOptions = {
     language: "en",
     max_len: 0,
     translate: false,
   }
-  return whisperAsync({
+  const res = await whisperAsync({
     model: modelPath,
     fname_inp: filePath,
     ...{
@@ -51,4 +55,6 @@ export function transcribe(
       ..._options,
     },
   })
+  cb?.(idx)
+  return res
 }

@@ -1,8 +1,14 @@
 import { spawn } from "child_process"
 import readline from "readline"
 import fs from "fs"
-import { safePath } from "~~/utils"
+import { timestampToSecond } from "~~/utils"
+import { safePath } from "~~/utils/path"
 import { AutocutConfig } from "~~/../types"
+import { slice } from "~~/ffmpeg"
+import { detectVoiceActivity } from "~~/vad"
+import { transcribe, WhisperResItem } from "~~/whisper"
+import { type NodeCue, type NodeList, stringifySync } from "subtitle"
+
 type GenerateStatus = "processing" | "error" | "success"
 
 /**
@@ -200,4 +206,61 @@ export function cutVideo(
     }
   });
 
+}
+
+
+export async function generateSubtitle1(
+  file: string, 
+  config: {language: string, modelPath: string, vad?: boolean}, 
+  cb?: (status: GenerateStatus, msg: string, process?: number) => any,
+) {
+  const srtFile = file.slice(0, file.lastIndexOf(".")) + ".srt"
+
+  const srt: NodeList = []
+  const times = detectVoiceActivity(file)
+
+  let res: Array<WhisperResItem[]> = []
+
+  let sliceRes: Array<{start: string, end: string, file: string}> = []
+  
+  if(config.vad) {
+    const { sliceRes: _sliceRes, removeTemps } = await slice(file, times)
+    sliceRes = _sliceRes
+
+    const done: number[] = []
+    
+    cb?.("processing", "transcribing", 0)
+    res = await Promise.all(sliceRes.map((item, _idx) => {
+      return transcribe(config.modelPath, item.file, {language: config.language}, _idx, (idx: number) => {
+        done.push(idx)
+        cb?.("processing", "transcribing", Math.floor(done.length / sliceRes.length * 100))
+      })
+    }))
+
+    removeTemps()
+  } else {
+    cb?.("processing", "transcribing", 0)
+    res.push(await transcribe(config.modelPath, file, {language: config.language}))
+    cb?.("processing", "transcribing", 100)
+  }
+  
+  // 生成 srt 并保存
+  res.forEach((p, pIdx) => {
+    p.forEach(l => {
+      let offset = 0
+      if(sliceRes[pIdx]) {
+        offset = Number(Number(sliceRes[pIdx].start).toFixed(3))
+      }
+      const cue: NodeCue = {
+        type: "cue",
+        data: {
+          start: (timestampToSecond(l[0]) + offset) * 1000,
+          end: (timestampToSecond(l[1]) + offset) * 1000,
+          text: l[2],
+        },
+      }
+      srt.push(cue)
+    })
+  })
+  fs.writeFileSync(srtFile, stringifySync(srt, { format: "SRT" }))
 }

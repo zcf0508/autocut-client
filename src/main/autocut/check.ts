@@ -1,5 +1,5 @@
 import { exec } from "child_process"
-import { safePath } from "~~/utils"
+import { safePath } from "~~/utils/path"
 
 export function ffmpegCheck() {
   return new Promise<boolean>((resolve, reject) => {
