@@ -2,6 +2,27 @@ const shelljs = require("shelljs")
 const fs = require("node:fs")
 const path = require("node:path")
 
+function cpDirSync(source, target) {
+  const stat = fs.statSync(source)
+  if(stat.isDirectory()) {
+    if(!fs.existsSync(target)) {
+      fs.mkdirSync(target)
+    }
+    const files = fs.readdirSync(source)
+    files.forEach((file) => {
+      const curSource = path.join(source, file)
+      const curTarget = path.join(target, file)
+      if(fs.statSync(curSource).isDirectory()) {
+        cpDirSync(curSource, curTarget)
+      } else {
+        fs.copyFileSync(curSource, curTarget)
+      }
+    })
+  } else {
+    fs.copyFileSync(source, target)
+  }
+}
+
 function info(msg) {
   shelljs.echo("\x1b[32m" + msg + "\x1b[0m")
 }
@@ -17,7 +38,10 @@ if(!fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/Makefile"))) {
   )
 }
 
-if(!fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node"))) {
+if(
+  !fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node"))
+  && !fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node"))
+) {
   info("Build whisper.cpp addon")
   shelljs.exec("cd ./lib/whisper.cpp && npx cmake-js compile -T whisper-addon -B Release") 
 }
@@ -27,18 +51,18 @@ if(
     fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node")) 
     || fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
   )
-  && !fs.existsSync(path.resolve(__dirname, "../public/resources/whisper-addon.node"))
+  && !fs.existsSync(path.resolve(__dirname, "../public/resources/whisper/whisper-addon.node"))
 ) {
   info("Copy whisper.cpp addon")
   if(process.platform === "win32") {
-    fs.cpSync(
-      path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node"), 
-      path.resolve(__dirname, "../public/resources/whisper-addon.node"),
+    cpDirSync(
+      path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release"), 
+      path.resolve(__dirname, "../public/resources/whisper"),
     )
   } else {
-    fs.cpSync(
-      path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node"), 
-      path.resolve(__dirname, "../public/resources/whisper-addon.node"),
+    cpDirSync(
+      path.resolve(__dirname, "../lib/whisper.cpp/build/Release"), 
+      path.resolve(__dirname, "../public/resources/whisper"),
     )
   }
 }
@@ -60,11 +84,11 @@ if(!fs.existsSync(path.resolve(__dirname, "../lib/vad/build/Release/vad_addon.no
 
 if(
   fs.existsSync(path.resolve(__dirname, "../lib/vad/build/Release/vad_addon.node"))
-  && !fs.existsSync(path.resolve(__dirname, "../public/resources/vad_addon.node"))
+  && !fs.existsSync(path.resolve(__dirname, "../public/resources/vad/vad_addon.node"))
 ) {
   info("Copy VAD-addon")
-  fs.cpSync(
-    path.resolve(__dirname, "../lib/vad/build/Release/vad_addon.node"), 
-    path.resolve(__dirname, "../public/resources/vad_addon.node"),
+  cpDirSync(
+    path.resolve(__dirname, "../lib/vad/build/Release"), 
+    path.resolve(__dirname, "../public/resources/vad"),
   )
 }

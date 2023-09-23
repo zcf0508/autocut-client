@@ -14,6 +14,7 @@ export type Vad = (model: string, filePath: string) => Array<{
 
 const { vad }: {vad: Vad} = require(path.join(
   resourcesPath,
+  "vad",
   "vad_addon.node",
 ));
 
