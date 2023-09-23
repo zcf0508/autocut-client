@@ -1,7 +1,6 @@
 import * as fs from "fs"
 import os from "os";
 import path from "path";
-import { v4 as uuidv4 } from "uuid";
 import { spawn } from "child_process"
 import readline from "readline"
 import { secondToTimestamp } from "~~/utils"
@@ -32,7 +31,7 @@ export function getAudio(
     "ffmpeg",
     [
       "-i", safePath(video), "-y", 
-      "-vn",  "-acodec", "pcm_s16le", "-ac", "1", "-ar", "8000", 
+      "-vn",  "-acodec", "pcm_s16le", "-ac", "1", "-ar", "16000", 
       exportPath,
     ],
   )
@@ -130,14 +129,14 @@ function _ffmpegSlice(file: string, start: string, end: string) {
   }
   return new Promise<ReturnType<Vad>[0] & {file: string}>((resolve, reject) => {
     
-    const id = uuidv4()
+    const id = Math.random().toString(36).slice(2)
     const exportPath = `${tempDir}/${id}.wav`
     const p = spawn(
       "ffmpeg",
       [
         "-i", safePath(file), "-y", 
         "-ss", secondToTimestamp(start), 
-        "-t", secondToTimestamp(Number(end) - Number(start)), 
+        "-t", secondToTimestamp((Number(end) - Number(start)).toFixed(6)), 
         "-c:a", "pcm_s16le", 
         exportPath,
       ],
