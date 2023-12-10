@@ -36,12 +36,21 @@ function getDuration(file: string) {
 }
 
 export async function detectVoiceActivity(filePath: string) {
+  const res = vad(model, filePath)  
+  
   const mediaDuration = await getDuration(filePath)
-
-  const res = vad(model, filePath)
-
-  res[0].start = "0.000000"
-  res[res.length - 1].end = `${mediaDuration}`
+  if(res[0].start !== "0.000000") {
+    res.unshift({
+      start: "0.000000",
+      end: res[0].start,
+    })
+  }
+  if(res[res.length - 1].end !== `${mediaDuration}`) {
+    res.push({
+      start: res[res.length - 1].end,
+      end: `${mediaDuration}`,
+    })
+  }
 
   for(let i = 0; i < res.length - 1; i++) {
     const current = res[i]
@@ -52,6 +61,21 @@ export async function detectVoiceActivity(filePath: string) {
       next.start = `${middle}`
     }
   }
-  console.log(res)
-  return res
+
+  let merged = [];
+  let current = res[0];
+
+  for(let i = 1; i < res.length; i++) {
+    if(Number(res[i].end) - Number(current.start) < 15) {
+      current.end = res[i].end;
+    } else {
+      merged.push(current);
+      current = res[i];
+    }
+  }
+
+  // Push the last segment
+  merged.push(current);
+
+  return merged
 }

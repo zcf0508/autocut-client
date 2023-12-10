@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { promisify } from "node:util";
 
@@ -27,10 +28,13 @@ type WhisperAsync = (options: {
   language: string, 
   model: string,
   fname_inp: string
-  /** default: 0 */
-  max_len?: number
+  /** default: Math.min(4, os.cpus().length) */
+  n_threads: number
+  prompt: string
   /** default: false */
-  translate?: boolean
+  translate: boolean
+  /** not work   default: true */
+  use_gpu?: boolean
 }) => Promise<Array<WhisperResItem>>
 
 const whisperAsync: WhisperAsync = promisify(whisper);
@@ -38,15 +42,18 @@ const whisperAsync: WhisperAsync = promisify(whisper);
 export async function transcribe(
   modelPath: string, 
   filePath: string, 
-  _options: Omit<Parameters<WhisperAsync>[0], "model" | "fname_inp"> = {language: "en"},
-  idx?: number,
-  cb?: (idx: number) => any,
+  _options: Partial<Omit<Parameters<WhisperAsync>[0], "model" | "fname_inp" | "use_gpu">> = {},
 ) {
-  const defaultOptions = {
+  const defaultOptions: Omit<Parameters<WhisperAsync>[0], "model" | "fname_inp"> = {
     language: "en",
-    max_len: 0,
+    n_threads: Math.min(4, os.cpus().length),
     translate: false,
+    prompt: "",
+    use_gpu: true,
   }
+
+  let time = Date.now()
+
   const res = await whisperAsync({
     model: modelPath,
     fname_inp: filePath,
@@ -55,6 +62,11 @@ export async function transcribe(
       ..._options,
     },
   })
-  cb?.(idx)
-  return res
+
+  const cost = Date.now() - time
+  
+  return {
+    res,
+    cost: cost / 1000,
+  }
 }

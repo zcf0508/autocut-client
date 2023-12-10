@@ -5,7 +5,8 @@ import { spawn } from "child_process"
 import readline from "readline"
 import { secondToTimestamp } from "~~/utils"
 import { safePath } from "~~/utils/path"
-import { type Vad } from "~~/vad"
+import { type Vad } from "~~/vad/index"
+import { i } from "vitest/dist/index-5aad25c1";
 
 type ProcessStatus = "error" | "processing" | "success"
 
@@ -161,9 +162,28 @@ function _ffmpegSlice(file: string, start: string, end: string) {
 export async function slice(file: string, times: ReturnType<Vad>) {
   // ffmpeg -i input_audio.mp3 -ss 00:00:02 -t 00:00:03 -c:a pcm_s16le output_audio.wav
 
-  const sliceRes = await Promise.all(times.map(time => {
-    return _ffmpegSlice(file, time.start, time.end)
-  }))
+  const sliceRes = [] as Array<{
+    start: string;
+    end: string;
+    file: string;
+  }>
+
+  const cpuNum = os.cpus().length
+  const threads = Math.floor(cpuNum / 2) || 1
+
+  // 打印进度条
+  let lastProgress = 0
+  for (let i = 0; i < Math.ceil(times.length / threads); i++) {
+    const _res = await Promise.all(times.slice(i * threads, i * threads + threads).map(time => {
+      return _ffmpegSlice(file, time.start, time.end)
+    }))
+    sliceRes.push(..._res)
+    const progress = Math.floor((i * threads + threads) / times.length * 100)
+    if(progress > lastProgress) {
+      lastProgress = progress
+      console.log(`slice progress: ${progress > 100 ? 100 : progress}%`)
+    }
+  }
   
   return {
     sliceRes,

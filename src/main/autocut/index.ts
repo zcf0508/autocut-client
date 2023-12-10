@@ -1,6 +1,7 @@
 import { spawn } from "child_process"
 import readline from "readline"
 import fs from "fs"
+import os from "os";
 import { timestampToSecond } from "~~/utils"
 import { safePath } from "~~/utils/path"
 import { AutocutConfig } from "~~/../types"
@@ -216,31 +217,60 @@ export async function generateSubtitle1(
 ) {
   const srtFile = file.slice(0, file.lastIndexOf(".")) + ".srt"
 
+  if (fs.existsSync(srtFile)) {
+    cb?.("success", "srt file already exist")
+    return
+  }
+
   const srt: NodeList = []
-  const times = await detectVoiceActivity(file)
 
   let res: Array<WhisperResItem[]> = []
 
   let sliceRes: Array<{start: string, end: string, file: string}> = []
   
   if(config.vad) {
+    const times = await detectVoiceActivity(file)
+
     const { sliceRes: _sliceRes, removeTemps } = await slice(file, times)
     sliceRes = _sliceRes
 
-    const done: number[] = []
-    
     cb?.("processing", "transcribing", 0)
-    res = await Promise.all(sliceRes.map((item, _idx) => {
-      return transcribe(config.modelPath, item.file, {language: config.language}, _idx, (idx: number) => {
-        done.push(idx)
-        cb?.("processing", "transcribing", Math.floor(done.length / sliceRes.length * 100))
-      })
-    }))
+
+    // 打印进度条
+    let lastProgress = 0
+    for (let i = 0; i < times.length; i++) {
+      const item = sliceRes[i]
+
+      const { res: t, cost } = await transcribe(
+        config.modelPath, 
+        item.file, 
+        {
+          language: config.language,
+          n_threads: os.cpus().length - 1,
+        }, 
+      )
+
+      console.log(`speed: ${(cost/(Number(item.end) - Number(item.start))).toFixed(2)}`)
+
+      res.push(t)
+
+      const progress = Math.floor(i / times.length * 100)
+      if(progress > lastProgress) {
+        lastProgress = progress
+        cb?.("processing", "transcribing", progress > 100 ? 100 : progress)
+      }
+    }
 
     removeTemps()
   } else {
-    cb?.("processing", "transcribing", 0)
-    res.push(await transcribe(config.modelPath, file, {language: config.language}))
+    res.push((await transcribe(
+      config.modelPath, 
+      file, 
+      {
+        language: config.language, 
+        n_threads: os.cpus().length - 1,
+      },
+    )).res)
     cb?.("processing", "transcribing", 100)
   }
   
@@ -263,4 +293,5 @@ export async function generateSubtitle1(
     })
   })
   fs.writeFileSync(srtFile, stringifySync(srt, { format: "SRT" }))
+  cb?.("success", "saved", 100)
 }

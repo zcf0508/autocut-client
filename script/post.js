@@ -29,7 +29,7 @@ function info(msg) {
 
 if(!fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/Makefile"))) {
   info("Clone whisper.cpp")
-  shelljs.exec("git clone https://github.com/ggerganov/whisper.cpp.git lib/whisper.cpp -b v1.4.2 --depth=1")
+  shelljs.exec("git clone https://github.com/ggerganov/whisper.cpp.git lib/whisper.cpp -b v1.5.1 --depth=1")
 
   info("Patch whisper addon.cpp")
   fs.cpSync(
@@ -47,11 +47,8 @@ if(
 }
 
 if(
-  (
-    fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node")) 
-    || fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
-  )
-  && !fs.existsSync(path.resolve(__dirname, "../public/resources/whisper/whisper-addon.node"))
+  fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node")) 
+  || fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
 ) {
   info("Copy whisper.cpp addon")
   if(process.platform === "win32") {
@@ -84,7 +81,6 @@ if(!fs.existsSync(path.resolve(__dirname, "../lib/vad/build/Release/vad_addon.no
 
 if(
   fs.existsSync(path.resolve(__dirname, "../lib/vad/build/Release/vad_addon.node"))
-  && !fs.existsSync(path.resolve(__dirname, "../public/resources/vad/vad_addon.node"))
 ) {
   info("Copy VAD-addon")
   cpDirSync(
