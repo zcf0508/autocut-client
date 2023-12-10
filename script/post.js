@@ -43,7 +43,7 @@ if(
   && !fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node"))
 ) {
   info("Build whisper.cpp addon")
-  shelljs.exec("cd ./lib/whisper.cpp && npx cmake-js compile -T whisper-addon -B Release") 
+  shelljs.exec("cd ./lib/whisper.cpp && npx cmake-js compile --CDWHISPER_CUBLAS=1 -T whisper-addon -B Release") 
 }
 
 if(
