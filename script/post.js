@@ -43,25 +43,49 @@ if(
   && !fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node"))
 ) {
   info("Build whisper.cpp addon")
-  shelljs.exec("cd ./lib/whisper.cpp && npx cmake-js compile --CDWHISPER_CUBLAS=1 -T whisper-addon -B Release") 
-}
 
-if(
-  fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node")) 
-  || fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
-) {
-  info("Copy whisper.cpp addon")
-  if(process.platform === "win32") {
-    cpDirSync(
-      path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release"), 
-      path.resolve(__dirname, "../public/resources/whisper"),
-    )
-  } else {
-    cpDirSync(
-      path.resolve(__dirname, "../lib/whisper.cpp/build/Release"), 
-      path.resolve(__dirname, "../public/resources/whisper"),
-    )
+  // cpu
+  shelljs.exec("cd ./lib/whisper.cpp && npx cmake-js compile -T whisper-addon -B Release")
+  if(
+    fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node")) 
+    || fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
+  ) {
+    info("Copy whisper.cpp addon")
+    if(process.platform === "win32") {
+      cpDirSync(
+        path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release"), 
+        path.resolve(__dirname, "../public/resources/whisper"),
+      )
+    } else {
+      cpDirSync(
+        path.resolve(__dirname, "../lib/whisper.cpp/build/Release"), 
+        path.resolve(__dirname, "../public/resources/whisper"),
+      )
+    }
   }
+
+  // 使用 fs 删除 build 文件夹
+  shelljs.rm("-rf", path.resolve(__dirname, "../lib/whisper.cpp/build"))
+
+  // gpu
+  shelljs.exec("cd ./lib/whisper.cpp && npx cmake-js compile --CDWHISPER_CUBLAS=1 -T whisper-addon -B Release")
+  if(
+    fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/Release/whisper-addon.node")) 
+    || fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release/whisper-addon.node")) 
+  ) {
+    info("Copy whisper.cpp addon")
+    if(process.platform === "win32") {
+      cpDirSync(
+        path.resolve(__dirname, "../lib/whisper.cpp/build/bin/Release"), 
+        path.resolve(__dirname, "../public/resources/cublas-whisper"),
+      )
+    } else {
+      cpDirSync(
+        path.resolve(__dirname, "../lib/whisper.cpp/build/Release"), 
+        path.resolve(__dirname, "../public/resources/cublas-whisper"),
+      )
+    }
+  } 
 }
 
 if(!fs.existsSync(path.resolve(__dirname, "../lib/vad/CMakeLists.txt"))) {

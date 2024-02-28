@@ -26,6 +26,8 @@ release
 dist-electron
 
 lib
-public/resources/*addon.node
-public/resources/*onnx
+public/resources/vad
+public/resources/whisper
+public/resources/cublas-whisper
+public/resources/*.onnx
 test/**/ggml-*.bin
