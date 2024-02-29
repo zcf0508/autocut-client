@@ -15,9 +15,9 @@
     "coverage": "vitest run --coverage",
     "release": "release-it"
   },
-  "packageManager": "pnpm@7.33.5",
+  "packageManager": "pnpm@8.15.4",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "@iconify/json": "^2.1.136",
