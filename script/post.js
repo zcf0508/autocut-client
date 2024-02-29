@@ -30,7 +30,7 @@ function info(msg) {
 
 if(!fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/Makefile"))) {
   info("Clone whisper.cpp")
-  shelljs.exec("git clone https://github.com/ggerganov/whisper.cpp.git lib/whisper.cpp -b v1.5.1 --depth=1")
+  shelljs.exec("git clone https://github.com/ggerganov/whisper.cpp.git lib/whisper.cpp -b v1.5.4 --depth=1")
 
   info("Patch whisper addon.cpp")
   fs.cpSync(
