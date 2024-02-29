@@ -33,8 +33,12 @@ if(!fs.existsSync(path.resolve(__dirname, "../lib/whisper.cpp/Makefile"))) {
 
   info("Patch whisper addon.cpp")
   fs.cpSync(
-    path.resolve(__dirname, "./whisper-addon.cpp"), 
+    path.resolve(__dirname, "./whisper.cpp/whisper-addon.cpp"), 
     path.resolve(__dirname, "../lib/whisper.cpp/examples/addon.node/addon.cpp"),
+  )
+  fs.cpSync(
+    path.resolve(__dirname, "./whisper.cpp/CMakeLists.txt"), 
+    path.resolve(__dirname, "../lib/whisper.cpp/examples/addon.node/CMakeLists.txt"),
   )
 }
 
@@ -91,11 +95,17 @@ if(
 if(!fs.existsSync(path.resolve(__dirname, "../lib/vad/CMakeLists.txt"))) {
   info("Clone VAD-addon")
   shelljs.exec("git clone https://github.com/chenqianhe/VAD-addon lib/vad --depth=1")
+
+  info("Patch whisper addon.cpp")
+  fs.cpSync(
+    path.resolve(__dirname, "./vad/CMakeLists.txt"),
+    path.resolve(__dirname, "../lib/vad/CMakeLists.txt"),
+  )
 }
 
 if(!fs.existsSync(path.resolve(__dirname, "../lib/vad/build/Release/vad_addon.node"))) {
   info("Build VAD-addon")
-  shelljs.exec("cd lib/vad && npm install && npx gulp")
+  shelljs.exec("cd lib/vad && npx gulp")
   info("Copy VAD-addon model")
   fs.cpSync(
     path.resolve(__dirname, "../lib/vad/silero_vad.onnx"), 
