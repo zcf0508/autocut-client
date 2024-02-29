@@ -66,7 +66,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${NODE_ADDON_API_DIR})
 #==================================================================
 
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} ${FASTDEPLOY_LIBS})
-target_link_options(${PROJECT_NAME} PRIVATE ${CMAKE_SHARED_LINKER_FLAGS})
+
+if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
+    target_link_options(${PROJECT_NAME} PRIVATE ${CMAKE_SHARED_LINKER_FLAGS})
+endif ()
 
 if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
     # Generate node.lib

@@ -24,7 +24,10 @@ target_include_directories(${TARGET} PRIVATE ${NODE_ADDON_API_DIR})
 #==================================================================
 
 target_link_libraries(${TARGET} ${CMAKE_JS_LIB} common whisper ${CMAKE_THREAD_LIBS_INIT})
-target_link_options(${TARGET} PRIVATE ${CMAKE_SHARED_LINKER_FLAGS})
+
+if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
+    target_link_options(${TARGET} PRIVATE ${CMAKE_SHARED_LINKER_FLAGS})
+endif ()
 
 if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
     # Generate node.lib
