@@ -7,7 +7,6 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall": "node ./script/post.js",
     "dev": "vite",
     "lint": "eslint --ext .ts --ext .vue ./src",
     "format": "eslint --fix --ext .ts --ext .vue ./src",
@@ -46,6 +45,7 @@
     "node-addon-api": "^5.1.0",
     "release-it": "^15.6.0",
     "shelljs": "^0.8.5",
+    "std-env": "^3.7.0",
     "subtitle": "^4.2.1",
     "typescript": "^4.9.3",
     "unocss": "^0.46.5",

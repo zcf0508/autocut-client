@@ -96,6 +96,9 @@ importers:
       shelljs:
         specifier: ^0.8.5
         version: 0.8.5
+      std-env:
+        specifier: ^3.7.0
+        version: 3.7.0
       subtitle:
         specifier: ^4.2.1
         version: 4.2.1
@@ -7491,6 +7494,10 @@ packages:
     dependencies:
       define-property: 0.2.5
       object-copy: 0.1.0
+    dev: true
+
+  /std-env@3.7.0:
+    resolution: {integrity: sha512-JPbdCEQLj1w5GilpiHAx3qJvFndqybBysA3qUOnznweH4QbNYUsW/ea8QzSrnh0vNsezMMw5bcVool8lM0gwzg==}
     dev: true
 
   /stdin-discarder@0.1.0:
