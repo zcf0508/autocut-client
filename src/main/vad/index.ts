@@ -12,11 +12,15 @@ export type Vad = (model: string, filePath: string) => Array<{
   end: string
 }>
 
-const { vad }: {vad: Vad} = require(path.join(
-  resourcesPath,
-  "vad",
-  "vad_addon.node",
-));
+const getVad = () => {
+  const { vad }: {vad: Vad} = require(path.join(
+    resourcesPath,
+    "vad",
+    "vad_addon.node",
+  ));
+
+  return vad
+}
 
 const model = path.resolve(resourcesPath, "silero_vad.onnx")
 
@@ -36,7 +40,11 @@ function getDuration(file: string) {
 }
 
 export async function detectVoiceActivity(filePath: string) {
-  const res = vad(model, filePath)  
+  console.log({
+    model,
+    filePath,
+  })
+  const res = getVad()(model, filePath)  
   
   const mediaDuration = await getDuration(filePath)
   if(res[0].start !== "0.000000") {

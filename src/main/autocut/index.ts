@@ -236,36 +236,28 @@ export async function generateSubtitle1(
 
     cb?.("processing", "transcribing", 0)
 
-    // 打印进度条
-    let lastProgress = 0
-    for (let i = 0; i < times.length; i++) {
-      const item = sliceRes[i]
-
-      const { res: t, cost } = await transcribe(
-        config.modelPath, 
-        item.file, 
-        {
-          language: config.language,
-          n_threads: os.cpus().length - 1,
-        }, 
-      )
-
-      console.log(`speed: ${(cost/(Number(item.end) - Number(item.start))).toFixed(2)}`)
-
-      res.push(t)
-
-      const progress = Math.floor(i / times.length * 100)
-      if(progress > lastProgress) {
-        lastProgress = progress
+    const { res: t, cost } = await transcribe(
+      config.modelPath, 
+      sliceRes.map(r => r.file), 
+      {
+        language: config.language,
+        n_threads: os.cpus().length - 1,
+      }, 
+      (progress) => {
         cb?.("processing", "transcribing", progress > 100 ? 100 : progress)
-      }
-    }
+      },
+    )
+
+    console.log({cost})
+
+    res = [t]
 
     removeTemps()
   } else {
+    cb?.("processing", "transcribing", 0)
     res.push((await transcribe(
       config.modelPath, 
-      file, 
+      [file], 
       {
         language: config.language, 
         n_threads: os.cpus().length - 1,
