@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-12
             TARGET: macos
             FORMAT: dmg
             ASSET_MIME: application/x-apple-diskimage 
